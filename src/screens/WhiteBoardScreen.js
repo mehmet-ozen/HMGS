@@ -22,7 +22,10 @@ const NodeTypes = {
 };
 
 export default function WhiteboardScreen({ route }) {
-    const { courseId } = route.params;
+    <View>
+        <Text>WhiteboardScreen</Text>
+    </View>
+ /*   const { courseId } = route.params;
     
     // Kurs için mind map verisini bul
     const mindmap = mindmapsData.mindmaps.find(m => m.courseId === courseId);
@@ -158,7 +161,7 @@ export default function WhiteboardScreen({ route }) {
                 </Animated.View>
             </View>
         </GestureDetector>
-    );
+    );*/
 }
 
 const styles = StyleSheet.create({

@@ -7,14 +7,14 @@ import Animated, { FadeIn, FadeOut, LinearTransition, SlideInUp, SlideOutDown } 
 import { colors } from '../theme/colors';
 
 const courseImages = {
-  is_hukuku: require('../images/is_hukuku.png'),
-  anayasa_hukuku: require('../images/anayasa_hukuku.png'),
-  aile_hukuku: require('../images/aile_hukuku.png'),
-  borclar_hukuku: require('../images/borclar_hukuku.png'),
-  icra_iflas_hukuku: require('../images/icra_iflas_hukuku.png'),
-  medeni_usul_hukuku: require('../images/medeni_usul_hukuku.png'),
-  esya_hukuku: require('../images/esya_hukuku.png'),
-  miras_hukuku: require('../images/miras_hukuku.png'),
+  is_hukuku: require('../../assets/images/is_hukuku.png'),
+  anayasa_hukuku: require('../../assets/images/anayasa_hukuku.png'),
+  aile_hukuku: require('../../assets/images/aile_hukuku.png'),
+  borclar_hukuku: require('../../assets/images/borclar_hukuku.png'),
+  icra_iflas_hukuku: require('../../assets/images/icra_iflas_hukuku.png'),
+  medeni_usul_hukuku: require('../../assets/images/medeni_usul_hukuku.png'),
+  esya_hukuku: require('../../assets/images/esya_hukuku.png'),
+  miras_hukuku: require('../../assets/images/miras_hukuku.png'),
 };
 
 function Catagories({ setFilteredCourses, coursesData }) {
