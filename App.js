@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { createStaticNavigation, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './src/screens/HomeScreen';
@@ -12,8 +12,12 @@ import CoursesDetailScreen from './src/screens/CoursesDetailScreen.js';
 import CoursesScreen from './src/screens/CoursesScreen.js';
 import { createStackNavigator } from '@react-navigation/stack';
 import NotesScreen from './src/screens/NotesScreen.js';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { StatusBar } from 'expo-status-bar';
+
 const RootStack = createNativeStackNavigator({
-  
+
   screenOptions: {
     title: 'Hukuk&HMGS',
     headerTitleStyle: { color: colors.primary },
@@ -27,6 +31,7 @@ const RootStack = createNativeStackNavigator({
         headerTitleAlign: 'center',
         headerTitleStyle: { color: colors.text.primary },
         headerStyle: { backgroundColor: colors.primary },
+        headerShown: false,
       },
     },
     Courses: {
@@ -36,7 +41,7 @@ const RootStack = createNativeStackNavigator({
         animation: 'slide_from_bottom',
         presentation: 'modal',
         headerTitle: 'Dersler',
-        headerTitleStyle: { color: colors.text.primary },
+        headerTitleStyle: { color: colors.text.primary},
       }
     },
     CoursesDetail: {
@@ -48,9 +53,12 @@ const RootStack = createNativeStackNavigator({
     },
     Notes: {
       screen: NotesScreen,
-      options: ({ route }) => ({
+      options: ({ navigation }) => ({
         headerTitleStyle: { color: colors.text.primary },
         headerStyle: { backgroundColor: colors.background.primary },
+        animation: 'slide_from_bottom',
+        headerBackVisible: false,
+        presentation: 'fullScreenModal',
       }),
     },
     Whiteboard: {
@@ -73,8 +81,11 @@ const MyTheme = {
 const Navigation = createStaticNavigation(RootStack);
 export default function App() {
   return (
-    <GestureHandlerRootView>
-      <Navigation theme={MyTheme}/>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <StatusBar backgroundColor={colors.primary} style="light" />
+        <Navigation theme={MyTheme} />
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   )
 }

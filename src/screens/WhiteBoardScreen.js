@@ -9,7 +9,6 @@ import {
     GestureDetector,
 } from 'react-native-gesture-handler';
 import { Canvas, Circle, Path } from '@shopify/react-native-skia';
-import mindmapsData from '../data/mindmaps.json';
 import { colors } from '../theme/colors';
 
 const { width, height } = Dimensions.get('window');

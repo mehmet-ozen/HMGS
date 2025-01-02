@@ -11,6 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../theme/colors';
+import { StatusBar } from 'expo-status-bar';
 
 const AccordionItem = ({ course, navigation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -58,6 +59,7 @@ const AccordionItem = ({ course, navigation }) => {
 
   return (
     <View style={styles.accordionContainer}>
+      <StatusBar backgroundColor={colors.primary} />
       <TouchableOpacity
         style={styles.topicItem}
         onPress={toggleAccordion}
@@ -80,7 +82,7 @@ const AccordionItem = ({ course, navigation }) => {
           <TouchableOpacity
             key={subTopic.id}
             style={styles.subTopicItem}
-            onPress={() => navigation.navigate('Notes', { topic: course.subTopics })}
+            onPress={() => navigation.navigate('Notes', { topic: subTopic })}
           >
             <Text style={styles.subTopicTitle}>{subTopic.title}</Text>
           </TouchableOpacity>

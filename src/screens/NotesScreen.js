@@ -1,36 +1,21 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, FlatList } from 'react-native';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Modal } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, {
-    useAnimatedRef,
     useSharedValue,
     withSpring,
     useAnimatedStyle,
     LinearTransition,
-    scrollTo,
-    interpolate
+    interpolate,
 } from 'react-native-reanimated';
-
 import { colors } from '../theme/colors';
-import { useNavigation } from '@react-navigation/native';
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import SlideModal from '../components/SlideModal';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { StatusBar } from 'expo-status-bar';
 
 const { width, height } = Dimensions.get('window');
-
-export default function NotesScreen({ route }) {
-    const navigation = useNavigation();
-    const { topic } = route.params;
-    const flatListRef = useRef();
-    const [currentPage, setCurrentPage] = useState(0);
-    const progressAnimation = useSharedValue(0);
-    const pageCounterAnimation = useSharedValue(0);
-    const progressContainerWidth = width - 32;
-
-    useEffect(() => {
-        navigation.setOptions({
-          title: topic.title,
-        });
-      }, [topic]);
-
     // Örnek not verileri
     const notes = [
         {
@@ -63,273 +48,290 @@ export default function NotesScreen({ route }) {
             title: 'Önemli Noktalar',
             content: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
         },
-
-
-
     ];
 
-    const renderNoteCard = ({ item, index }) => (
-        <Animated.View
-            layout={LinearTransition}
-            style={styles.noteCard}
-        >
-            <Text style={styles.noteTitle}>{item.title}</Text>
-            <Text style={styles.noteContent}>{item.content}</Text>
-        </Animated.View>
+const SPRING_CONFIG = { damping: 15, stiffness: 100 };
+
+const NoteCard = React.memo(({ title, content }) => (
+  <Animated.View layout={LinearTransition} style={styles.noteCard}>
+    <Text style={styles.noteTitle}>{title}</Text>
+    <Text style={styles.noteContent}>{content}</Text>
+  </Animated.View>
+));
+
+const NavigationButton = React.memo(({ onPress, disabled, icon }) => (
+  <TouchableOpacity
+    style={[styles.navButton, disabled && styles.navButtonDisabled]}
+    onPress={onPress}
+    disabled={disabled}
+    delayPressOut={100}
+  >
+    <Ionicons 
+      name={icon} 
+      size={24} 
+      color={disabled ? colors.text.light : colors.primary} 
+    />
+  </TouchableOpacity>
+));
+
+export default function NotesScreen({ route }) {
+  const { topic } = route.params;
+  const navigation = useNavigation();
+  const flatListRef = useRef(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const progressAnimation = useSharedValue(0);
+
+  const isOpen = useSharedValue(0);
+  const toggleSheet = useCallback(() => {
+    isOpen.value = isOpen.value === 0 ? 1 : 0;
+  }, []);
+
+  useEffect(() => {
+    if (navigation.isFocused()) {
+    navigation.setOptions({ 
+        title: topic.title,
+        headerRight: () => (
+          <TouchableWithoutFeedback onPress={toggleSheet} style={{padding:10}}>
+            <View style={styles.closeButton}>
+                <Ionicons name="close-circle" size={28} color={colors.status.error} />
+            </View>
+          </TouchableWithoutFeedback>
+        )
+    });
+    updateProgress(0);
+    }
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+        if (isOpen.value === 0) {
+            e.preventDefault();
+            toggleSheet();
+        }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [navigation, toggleSheet]);
+
+  const updateProgress = (page) => {
+    progressAnimation.value = withSpring(
+      ((page + 1) / notes.length) * 100, 
+      SPRING_CONFIG
     );
+  };
 
-    const onScroll = (event) => {
-        const page = Math.round(event.nativeEvent.contentOffset.x / width);
-        setCurrentPage(page);
-        progressAnimation.value = withSpring(
-            ((page + 1) / notes.length) * 100,
-            {
-                damping: 15,
-                stiffness: 100,
-            }
-        );
-        pageCounterAnimation.value = withSpring(
-            (page + 1) / notes.length * 100,
-            {
-                damping: 15,
-                stiffness: 100,
-            }
-        );
-    };
-
-    const progressAnimatedStyle = useAnimatedStyle(() => {
-        return {
-            width: `${progressAnimation.value}%`,
-            height: '100%',
-            backgroundColor: colors.primary,
-            borderRadius: 2,
-        };
+  const changePage = (newPage) => {
+    flatListRef.current?.scrollToIndex({
+      index: newPage,
+      animated: true
     });
+    setCurrentPage(newPage);
+    updateProgress(newPage);
+  };
 
-    const pageCounterStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                {
-                    translateX: interpolate(
-                        pageCounterAnimation.value,
-                        [0, 100],
-                        [0, progressContainerWidth - 40]
-                    ),
-                }
-            ],
-        };
-    });
+  const progressStyle = useAnimatedStyle(() => ({
+    width: `${progressAnimation.value}%`,
+    height: '100%',
+    backgroundColor: colors.primary,
+    borderRadius: 5,
+  }));
 
-    const goToNextPage = () => {
-        if (currentPage < notes.length - 1) {
-            const nextPage = currentPage + 1;
-            flatListRef.current?.scrollToIndex({
-                index: nextPage,
-                animated: true
-            });
-            setCurrentPage(nextPage);
-            progressAnimation.value = withSpring(
-                ((nextPage + 1) / notes.length) * 100,
-                {
-                    damping: 15,
-                    stiffness: 100,
-                }
-            );
-            pageCounterAnimation.value = withSpring(
-                (nextPage + 1) / notes.length * 100,
-                {
-                    damping: 15,
-                    stiffness: 100,
-                }
-            );
-        }
-    };
 
-    const goToPrevPage = () => {
-        if (currentPage > 0) {
-            const prevPage = currentPage - 1;
-            flatListRef.current?.scrollToIndex({
-                index: prevPage,
-                animated: true
-            });
-            setCurrentPage(prevPage);
-            progressAnimation.value = withSpring(
-                ((prevPage + 1) / notes.length) * 100,
-                {
-                    damping: 15,
-                    stiffness: 100,
-                }
-            );
-            pageCounterAnimation.value = withSpring(
-                (prevPage + 1) / notes.length * 100,
-                {
-                    damping: 15,
-                    stiffness: 100,
-                }
-            );
-        }
-    };
+  const handleExit = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
 
-    const getItemLayout = (data, index) => ({
-        length: width,
-        offset: width * index,
-        index,
-    });
-
-    const viewabilityConfig = {
-        itemVisiblePercentThreshold: 50
-    };
-
-    const onViewableItemsChanged = useRef(({ viewableItems }) => {
-        if (viewableItems.length > 0) {
-            setCurrentPage(viewableItems[0].index);
-        }
-    }).current;
-
-    const onMomentumScrollEnd = (event) => {
-        const page = Math.round(event.nativeEvent.contentOffset.x / width);
-        if (Math.abs(page - currentPage) > 1) {
-            const targetPage = currentPage + (page > currentPage ? 1 : -1);
-            flatListRef.current?.scrollToIndex({
-                index: targetPage,
-                animated: true
-            });
-            setCurrentPage(targetPage);
-        } else {
-            setCurrentPage(page);
-        }
-    };
-
-    return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.progressContainer}>
-                    <View style={styles.counterContainer}>
-                        <Animated.Text style={[styles.pageCounter, pageCounterStyle]}>
-                            {currentPage + 1}
-                        </Animated.Text>
-                    </View>
-                    <View style={styles.progressBarContainer}>
-                        <Animated.View style={progressAnimatedStyle} />
-                    </View>
-                </View>
+  return (
+      <View style={styles.container}>
+        <StatusBar backgroundColor={colors.primary} />
+        <View style={styles.header}>
+          <View style={styles.progressContainer}>
+            <View style={styles.progressBarContainer}>
+                <Text style={[styles.pageCounter,{position:'absolute',right:0,height:'100%',width:20,borderRadius:2,backgroundColor:colors.background.secondary,color:colors.text.secondary}]}>{notes.length}</Text>
+              <Animated.View style={progressStyle} >
+                <Text style={[styles.pageCounter,{position:'absolute',right:0,height:'100%',width:25,borderRadius:5}]}>{currentPage + 1}</Text>
+              </Animated.View>
             </View>
-
-            <Animated.FlatList
-                ref={flatListRef}
-                data={notes}
-                renderItem={renderNoteCard}
-                keyExtractor={item => item.id}
-                horizontal
-                pagingEnabled={true}
-                showsHorizontalScrollIndicator={false}
-                onScroll={onScroll}
-                onMomentumScrollEnd={onMomentumScrollEnd}
-                scrollEventThrottle={16}
-                snapToAlignment="center"
-                snapToInterval={width}
-                decelerationRate={'normal'}
-                style={{flexGrow: 0, height: height * 0.8}}
-                itemLayoutAnimation={LinearTransition}
-                getItemLayout={getItemLayout}
-                initialScrollIndex={0}
-                viewabilityConfig={viewabilityConfig}
-                onViewableItemsChanged={onViewableItemsChanged}
-                maintainVisibleContentPosition={{
-                    minIndexForVisible: 0,
-                    autoscrollToTopThreshold: 10,
-                }}
-            />
-
-            <View style={styles.navigationButtons}>
-                <TouchableOpacity
-                    style={[styles.navButton, currentPage === 0 && styles.navButtonDisabled]}
-                    onPress={goToPrevPage}
-                    disabled={currentPage === 0}
-                >
-                    <Ionicons name="chevron-back" size={24} color={currentPage === 0 ? colors.text.light : colors.primary} />
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={[styles.navButton, currentPage === notes.length - 1 && styles.navButtonDisabled]}
-                    onPress={goToNextPage}
-                    disabled={currentPage === notes.length - 1}
-                >
-                    <Ionicons name="chevron-forward" size={24} color={currentPage === notes.length - 1 ? colors.text.light : colors.primary} />
-                </TouchableOpacity>
-            </View>
+          </View>
         </View>
-    );
+
+        <Animated.FlatList
+          ref={flatListRef}
+          data={notes}
+          renderItem={({ item }) => <NoteCard {...item} />}
+          keyExtractor={item => item.id}
+          horizontal
+          pagingEnabled
+          scrollEnabled={false}
+          style={{flexGrow: 0, height: height * 0.8}}
+          showsHorizontalScrollIndicator={false}
+          getItemLayout={(_, index) => ({
+            length: width,
+            offset: width * index,
+            index,
+          })}
+        />
+
+        <View style={styles.navigationButtons}>
+          <NavigationButton
+            onPress={() => changePage(currentPage - 1)}
+            disabled={currentPage === 0}
+            icon="chevron-back"
+          />
+          <NavigationButton
+            onPress={() => changePage(currentPage + 1)}
+            disabled={currentPage === notes.length - 1}
+            icon="chevron-forward"
+          />
+        </View>
+
+        <SlideModal
+          isOpen={isOpen}
+          toggleModal={toggleSheet}
+          duration={300}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Çıkmak istediğinize emin misiniz?</Text>
+            <View style={styles.modalButtons}>
+
+
+              <TouchableWithoutFeedback 
+                style={[styles.modalButton, { backgroundColor: colors.background.primary, borderWidth:1, borderColor:colors.primary }]}
+                onPress={toggleSheet}
+              >
+                <Text style={[styles.modalButtonText,{color:colors.primary}]}>Hayır</Text>
+              </TouchableWithoutFeedback>
+              <TouchableWithoutFeedback 
+                style={[styles.modalButton, { backgroundColor: colors.primary }]}
+                onPress={handleExit}
+              >
+                <Text style={styles.modalButtonText}>Evet</Text>
+              </TouchableWithoutFeedback>
+            </View>
+          </View>
+        </SlideModal>
+      </View>
+
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background.primary,
+  container: {
+    flex: 1,
+    backgroundColor: colors.background.primary,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  header: {
+    paddingHorizontal: 16,
+  },
+  progressContainer: {
+    marginTop: 8,
+    borderRadius: 5,
+  },
+  counterContainer: {
+    marginBottom: 8,
+  },
+  pageCounter: {
+    fontSize: 12,
+    color: colors.text.white,
+    textAlign: 'center',
+    backgroundColor: colors.secondary,
+    position:'absolute',
+    right:0,
+    height:'100%',
+    width:20,
+    borderRadius:2,
+  },
+  progressBarContainer: {
+    height: 20,
+    backgroundColor: colors.background.secondary,
+    borderRadius: 5,
+    
+  },
+  noteCard: {
+    width: width - 32,
+    margin: 16,
+    backgroundColor: colors.background.secondary,
+    borderRadius: 16,
+    padding: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  noteTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.text.primary,
+    marginBottom: 16,
+  },
+  noteContent: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: colors.text.primary,
+  },
+  navigationButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  navButton: {
+    padding: 10,
+    borderRadius: 20,
+    backgroundColor: colors.background.secondary,
+  },
+  navButtonDisabled: {
+    opacity: 0.5,
+  },
+  closeButton: {
+    
+  },
+  modalContainer: {    
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    header: {
-        paddingHorizontal: 16,
-    },
-    progressContainer: {
-        marginTop: 8,
-    },
-    counterContainer: {
-        marginBottom: 8,
-        overflow: 'hidden',
-    },
-    pageCounter: {
-        fontSize: 16,
-        color: colors.text.white,
-        width: 30,
-        textAlign: 'center',
-        backgroundColor: colors.secondary,
-        borderRadius: 15,
-    },
-    progressBarContainer: {
-        height: 8,
-        backgroundColor: colors.background.secondary,
-        borderRadius: 2,
-        overflow: 'hidden',
-    },
-    noteCard: {
-        width: width - 32,
-        margin: 16,
-        backgroundColor: colors.background.secondary,
-        borderRadius: 16,
-        padding: 20,
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-    },
-    noteTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: colors.text.primary,
-        marginBottom: 16,
-    },
-    noteContent: {
-        fontSize: 16,
-        lineHeight: 24,
-        color: colors.text.primary,
-    },
-    navigationButtons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingBottom: 20,
-    },
-    navButton: {
-        padding: 10,
-        borderRadius: 20,
-        backgroundColor: colors.background.secondary,
-    },
-    navButtonDisabled: {
-        opacity: 0.5,
-    }
-
+    width:'80%',
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: colors.text.primary,
+    marginBottom: 20,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 20,
+  },
+  modalButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    minWidth: 50,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: colors.text.white,
+    fontSize: 16,
+    fontWeight: '600',
+  },
 });
