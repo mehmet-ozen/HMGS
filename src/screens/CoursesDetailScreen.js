@@ -12,71 +12,11 @@ import Animated, {
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../theme/colors';
 
-const coursesData = [
-  {
-    id: 1,
-    title: "Genel Bilgiler",
-    subTopics: [
-      { id: 'sub1', title: "Kişiler Hukuku" },
-      { id: 'sub2', title: "Aile Hukuku" },
-      { id: 'sub3', title: "Miras Hukuku" },
-    ]
-  },
-  {
-    id: 2,
-    title: "Borcun Kaynakları",
-    subTopics: [
-      { id: 'sub4', title: "Genel Hükümler" },
-      { id: 'sub5', title: "Özel Borç İlişkileri" },
-    ]
-  },
-  {
-    id: 3,
-    title: "İfa",
-    subTopics: [
-      { id: 'sub4', title: "Genel Hükümler" },
-      { id: 'sub5', title: "Özel Borç İlişkileri" },
-    ]
-  },
-  {
-    id: 4,
-    title: "Borçların İfa Edilmemesinin Sonuçları",
-    subTopics: [
-      { id: 'sub4', title: "Genel Hükümler" },
-      { id: 'sub5', title: "Özel Borç İlişkileri" },
-    ]
-  },  {
-    id: 5,
-    title: "Borçların Sona Erme Sebepleri",
-    subTopics: [
-      { id: 'sub4', title: "Genel Hükümler" },
-      { id: 'sub5', title: "Özel Borç İlişkileri" },
-    ]
-  }
-  ,{
-    id: 6,
-    title: "Borç İlişkisinde Özel Durumlar",
-    subTopics: [
-      { id: 'sub4', title: "Genel Hükümler" },
-      { id: 'sub5', title: "Özel Borç İlişkileri" },
-    ]
-  }  ,{
-    id: 7,
-    title: "Sözleşmenin Devri, Alacağın Devri ve Borcun Üstlenilmesi",
-    subTopics: [
-      { id: 'sub4', title: "Genel Hükümler" },
-      { id: 'sub5', title: "Özel Borç İlişkileri" },
-    ]
-  },
-  
-];
-
 const AccordionItem = ({ course, navigation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const rotation = useSharedValue(0);
   const height = useSharedValue(0);
   const [contentHeight, setContentHeight] = useState(100);
-
   const animatedStyles = useAnimatedStyle(() => {
     return {
       height: height.value,
@@ -140,7 +80,7 @@ const AccordionItem = ({ course, navigation }) => {
           <TouchableOpacity
             key={subTopic.id}
             style={styles.subTopicItem}
-            onPress={() => navigation.navigate('Whiteboard', { topicId: subTopic.id })}
+            onPress={() => navigation.navigate('Notes', { topic: course.subTopics })}
           >
             <Text style={styles.subTopicTitle}>{subTopic.title}</Text>
           </TouchableOpacity>
@@ -150,21 +90,27 @@ const AccordionItem = ({ course, navigation }) => {
   );
 };
 
-export default function CoursesDetailScreen() {
+export default function CoursesDetailScreen({ route }) {
   const navigation = useNavigation();
+  const { course, type } = route.params;
   const renderItem = ({ item }) => (
     <AccordionItem course={item} navigation={navigation} />
   );
-
+  useEffect(() => {
+    navigation.setOptions({
+      title: course.title,
+    });
+  }, [course]);
   return (
     <View style={styles.container}>
+      {course === null ? <Text>Ders Bulunamadı</Text> :
       <FlatList
-        data={coursesData}
+        data={course.topics}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
-      />
+      />}
     </View>
   );
 }

@@ -1,129 +1,76 @@
-import { View, Text, StyleSheet, Button, TouchableHighlight, FlatList, TouchableOpacity, TouchableWithoutFeedback, Image, Platform, UIManager, LayoutAnimation } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import Animated, { FadeIn, FadeOut, LinearTransition, SlideInUp, SlideOutDown } from 'react-native-reanimated';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { colors } from '../theme/colors';
+import { useNavigation } from '@react-navigation/native';
 
-
+const { width } = Dimensions.get('window');
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-  
-  useEffect(() => {
-    // Bu efektin doğru çalıştığından emin olun
-    console.log("Screen loaded");
-  }, []);
-
-  const DailyQuestion = () => {
-    return (
-      <View style={styles.DailyQuestionStyle}>
-        <Text style={styles.DQTextStyle}>Sözleşmenin ahlaka aykırı olması kesin hükümsüzlük hallerindendir.</Text>
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
-          <TouchableHighlight style={styles.DQGButtonStyle}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#F5F5DC", textAlign: 'center' }}>DOĞRU</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={styles.DQRButtonStyle}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#F5F5DC", textAlign: 'center' }}>YANLIŞ</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
-    )
-  }
-
-
-
-  //<Catagories setFilteredCourses={setFilteredCourses} coursesData={coursesData} />
   return (
-    <View style={{ flex: 1, backgroundColor: colors.primary }}>
-      <TouchableOpacity onPress={() => navigation.navigate("Courses")}>
-        <Text>Courses</Text>
-      </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.topSection}>
+        <Image
+          source={require('../../assets/images/pp_1.png')}
+          style={styles.circleImage}
+        />
+      </View>
+      
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          style={[styles.button, { backgroundColor: colors.accent }]}
+          onPress={() => navigation.navigate('Courses')}
+        >
+          <Text style={styles.buttonText}>DERSLER</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.button, { backgroundColor: '#8B4513' }]}
+          onPress={() => {}}
+        >
+          <Text style={styles.buttonText}>SORU BANKASI</Text>
+        </TouchableOpacity>
+      </View>
     </View>
-  )
+  );
 }
 
-
-
 const styles = StyleSheet.create({
-  DailyQuestionStyle: {
-    marginTop: 25,
-    marginHorizontal: 20,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: colors.accent,
-    backgroundColor: colors.background.card,
-    paddingVertical: 20,
-
-  },
-  DQTextStyle: {
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginHorizontal: 10,
-  },
-  DQGButtonStyle: {
-    width: 120,
-    height: 40,
-    backgroundColor: colors.status.success,
-    borderRadius: 50,
-    justifyContent: 'center',
-    marginHorizontal: 20,
-
-  },
-  DQRButtonStyle: {
-    width: 120,
-    height: 40,
-    backgroundColor: colors.status.error,
-    borderRadius: 50,
-    justifyContent: 'center',
-    marginHorizontal: 20,
-
-  },
-  CatagoriesItemStyle: {
-    width: 120,
-    height: 45,
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  CatagoriesText: {
-    fontWeight: 'bold',
-    color: colors.primary,
-    fontSize: 12,
-    textAlign:'center',
-
-  },
-  CoursesItemStyle: {
-    width: 360,
-    height: 100,
-    borderRadius: 25,
+  container: {
+    flex: 1,
     backgroundColor: colors.background.primary,
-    borderColor: colors.background.secondary,
-    flexDirection: "row",
+  },
+  topSection: {
     alignItems: 'center',
-    position: 'relative',
-    elevation: 8,
+    marginTop: 50,
   },
-  courseTitle: {
+  circleImage: {
+    width: width * 0.5, // Ekran genişliğinin yarısı
+    height: width * 0.5,
+    borderRadius: width * 0.25,
+    backgroundColor: '#ddd', // Placeholder renk
+  },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    marginTop: 40,
+    gap: 20,
+  },
+  button: {
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5, // Android gölge
+    shadowColor: '#000', // iOS gölge
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  buttonText: {
+    color: colors.text.white,
     fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginHorizontal: 10,
-  },
-  CoursesImage: {
-    width: 80,
-    height: 80,
-    marginLeft: 12,
-    borderRadius: 20,
-  },
-  IconContainer: {
-    position: "absolute",
-    alignSelf:"center",
-    justifyContent: "center",
-    right: 10,
-    backgroundColor: colors.background.primary,
+    fontWeight: 'bold',
   },
 });

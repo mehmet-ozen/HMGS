@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, Button, TouchableHighlight, FlatList, TouchableOpacity, TouchableWithoutFeedback, Image, Platform, UIManager, LayoutAnimation } from 'react-native'
+import { View, Text, StyleSheet, Button, TouchableHighlight, FlatList, TouchableOpacity, TouchableWithoutFeedback, Image, Platform, UIManager, LayoutAnimation, Dimensions } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation, useNavigationContainerRef } from '@react-navigation/native';
 import Animated, { FadeIn, FadeOut, LinearTransition, SlideInUp, SlideOutDown } from 'react-native-reanimated';
 import { colors } from '../theme/colors';
+import courses from '../data/courses.json';
+import { Canvas, CornerPathEffect, Path, Skia } from '@shopify/react-native-skia';
 
 const courseImages = {
   is_hukuku: require('../../assets/images/is_hukuku.png'),
@@ -17,14 +19,18 @@ const courseImages = {
   miras_hukuku: require('../../assets/images/miras_hukuku.png'),
 };
 
+const COURSE_ITEM_HEIGHT = 100;
+const MODAL_SPACING = 20; // Modal ile kurs arası mesafe
+const MODAL_HEIGHT = 150; // Modal yüksekliği
+
 function Catagories({ setFilteredCourses, coursesData }) {
   const [catagoriesData, setCatagoriesData] = useState([
     { id: 0, title: "Hepsi", icon: "check-to-slot", isSelected: true },
     { id: "SEPARATOR", title: "", icon: "", isSelected: false },
-    { id: 1, title: "Medeni Hukuk", icon: "people-group", isSelected: false, CoursesIDS: [0,1,2] },
-    { id: 2, title: "Anayasa Hukuku", icon: "book-open", isSelected: false, CoursesIDS: [3,4,5]},
-    { id: 3, title: "Ceza Hukuku", icon: "fingerprint", isSelected: false, CoursesIDS: [6,7,8] },
-    { id: 4, title: "Borçlar ve Ticaret Hukuku", icon: "money-check-dollar", isSelected: false, CoursesIDS: [9,10,11] },
+    { id: 1, title: "Medeni Hukuk", icon: "people-group", isSelected: false, CoursesIDS: [0, 1, 2] },
+    { id: 2, title: "Anayasa Hukuku", icon: "book-open", isSelected: false, CoursesIDS: [3, 4, 5] },
+    { id: 3, title: "Ceza Hukuku", icon: "fingerprint", isSelected: false, CoursesIDS: [6, 7, 8] },
+    { id: 4, title: "Borçlar ve Ticaret Hukuku", icon: "money-check-dollar", isSelected: false, CoursesIDS: [9, 10, 11] },
   ]);
 
 
@@ -36,11 +42,10 @@ function Catagories({ setFilteredCourses, coursesData }) {
         : { ...item, isSelected: false }
     );
     setCatagoriesData(updatedData);
-  
-    // Kategorilere göre kursları filtrele
+
     let filtered = [];
     if (id === 0) {
-      filtered = coursesData; // "Hepsi" seçildiğinde tüm kurslar
+      filtered = coursesData;
     } else {
       coursesData.forEach(course => {
         if (catagoriesData.find(cat => cat.id === id).CoursesIDS.includes(course.id)) {
@@ -48,31 +53,30 @@ function Catagories({ setFilteredCourses, coursesData }) {
         }
       });
     }
-  
+
     // Bookmarked courses should be at the top
     filtered.sort((a, b) => b.isSelected - a.isSelected);
-  
+
     setFilteredCourses(filtered);
   };
 
 
 
   function CatagoriesItem({ item }) {
-    //<FontAwesome6 name={item.icon} size={26} color={item.isSelected ? colors.text.white : colors.primary} style={{ textAlign: 'center', top: 25, position: 'absolute' }} />
     return (
       item.id === "SEPARATOR" ? <View style={{ height: 40, width: 1, backgroundColor: colors.primary, borderRadius: 10, position: 'absolute', alignSelf: "center" }} /> :
         <TouchableWithoutFeedback onPress={() => selectCategory(item.id)} >
-          <View style={[styles.CatagoriesItemStyle, { backgroundColor: item.isSelected ? colors.primaryLight : colors.background.primary}]}>
-            <Text style={[styles.CatagoriesText, {color: item.isSelected ? colors.text.black : colors.text.black , fontWeight: item.isSelected ? 'bold' : 'normal' }]}>{item.title}</Text>
+          <View style={[styles.CatagoriesItemStyle, { backgroundColor: item.isSelected ? colors.primaryLight : colors.background.primary }]}>
+            <Text style={[styles.CatagoriesText, { color: item.isSelected ? colors.text.black : colors.text.black, fontWeight: item.isSelected ? 'bold' : 'normal' }]}>{item.title}</Text>
           </View>
         </TouchableWithoutFeedback>
     )
   }
 
   return (
-    <View style={{ borderColor: '#800020', paddingVertical: 20}}>
+    <View style={{ borderColor: '#800020', paddingVertical: 20 }}>
       <FlatList
-        style={{ flexGrow: 0}}
+        style={{ flexGrow: 0 }}
         data={catagoriesData}
         horizontal={true}
         keyExtractor={item => item.id}
@@ -87,82 +91,102 @@ function Catagories({ setFilteredCourses, coursesData }) {
   )
 }
 
-export default function CoursesScreen() {
+function CourseActionModal({ isVisible, onClose, position, course }) {
   const navigation = useNavigation();
 
+  if (!isVisible) return null;
 
-  const [coursesData, setCoursesData] = useState([
-    { id: 0, title: "İş Hukuku", isSelected: false, img: "is_hukuku" },
-    { id: 2, title: "Anayasa Hukuku", isSelected: false, img: "anayasa_hukuku" },
-    { id: 3, title: "Aile Hukuku", isSelected: false, img: "aile_hukuku" },
-    { id: 4, title: "Borçlar Hukuku", isSelected: false, img: "borclar_hukuku"  },
-    { id: 9, title: "İcra ve İflas Hukuku", isSelected: false, img: "icra_iflas_hukuku" },
-    { id: 13, title: "Medeni Usul Hukuku", isSelected: false, img: "medeni_usul_hukuku" },
-    { id: 14, title: "Eşya Hukuku", isSelected: false, img: "esya_hukuku" },
-    { id: 15, title: "Miras Hukuku", isSelected: false, img: "miras_hukuku" },
-  ]);
+  const screenHeight = Dimensions.get('window').height;
+  const BOTTOM_SPACING = MODAL_SPACING; 
 
-  const [filteredCourses, setFilteredCourses] = useState(coursesData);
+  const isNearBottom = position.y + MODAL_HEIGHT + BOTTOM_SPACING > screenHeight - 100;
 
-
-  const DailyQuestion = () => {
+  const modalTop = isNearBottom
+    ? position.y - COURSE_ITEM_HEIGHT * 2 - BOTTOM_SPACING * 2 - 18
+    : position.y + BOTTOM_SPACING + 10
+  const TriangleSign = () => {
+    const roundedTrianglePath = `M 50 10L 0 90L 100 90Z`;
+    const scaleX = 30 / 100;
+    const scaleY = 30 / 100;
     return (
-      <View style={styles.DailyQuestionStyle}>
-        <Text style={styles.DQTextStyle}>Sözleşmenin ahlaka aykırı olması kesin hükümsüzlük hallerindendir.</Text>
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
-          <TouchableHighlight style={styles.DQGButtonStyle}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#F5F5DC", textAlign: 'center' }}>DOĞRU</Text>
-          </TouchableHighlight>
-          <TouchableHighlight style={styles.DQRButtonStyle}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#F5F5DC", textAlign: 'center' }}>YANLIŞ</Text>
-          </TouchableHighlight>
-        </View>
-      </View>
-    )
+      <Canvas style={{ 
+        width: 30, height: 30, position: 'absolute', 
+        alignSelf: "center",
+        top: isNearBottom? null : -18,
+        bottom: isNearBottom? -18 : null,
+        transform: [{ rotate: isNearBottom? "180deg" : "0deg" }],
+        }}>
+        <Path
+          path={roundedTrianglePath}
+          style="fill"
+          color={colors.primary}
+          transform={[{ scaleX }, { scaleY }]}
+          strokeJoin={"round"}
+        >
+          <CornerPathEffect r={15} />
+        </Path>
+
+      </Canvas>
+    );
   }
+  return (
+    <TouchableWithoutFeedback onPress={onClose}>
+      <View style={styles.modalOverlay}>
+        <TouchableWithoutFeedback>
+          <Animated.View 
+          entering={FadeIn.duration(200)}
+          exiting={FadeOut.duration(200)}
+          style={[styles.modalContainer, {
+            position: 'absolute',
+            top: modalTop,
+          }]}>
+            <TriangleSign />
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: colors.secondary }]}
+                onPress={() => { navigation.navigate("CoursesDetail", { course: course, type: "note" }), onClose() }}
+              >
+                <Text style={[styles.modalButtonText, { color: colors.text.white }]}>Not Oku</Text>
+              </TouchableOpacity>
 
-  const handleBookmarkClick = (id) => {
-    setFilteredCourses((prevCourses) => {
-      const updatedCourses = [...prevCourses]; // Diziyi kopyalayarak çalışıyoruz.
-      const currentIndex = updatedCourses.findIndex((course) => course.id === id);
-      const currentCourse = updatedCourses[currentIndex];
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: colors.background.primary }]}
+                onPress={() => { }}
+              >
+                <Text style={styles.modalButtonText}>Soru Çöz</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
+        </TouchableWithoutFeedback>
+      </View>
+    </TouchableWithoutFeedback>
+  );
+}
 
-      // Seçili durumu tersine çevir
-      currentCourse.isSelected = !currentCourse.isSelected;
+export default function CoursesScreen() {
 
-      if (!currentCourse.isSelected) {
-        // Unselect ediliyorsa:
-        // Altında seçili bookmark'ları kontrol et
-        let nextIndex = currentIndex + 1;
+  const coursesData = courses.courses;
+  const [filteredCourses, setFilteredCourses] = useState(coursesData);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
 
-        while (
-          nextIndex < updatedCourses.length &&
-          updatedCourses[nextIndex].isSelected
-        ) {
-          // Yer değiştir
-          [updatedCourses[nextIndex - 1], updatedCourses[nextIndex]] = [
-            updatedCourses[nextIndex],
-            updatedCourses[nextIndex - 1],
-          ];
-          nextIndex++;
-        }
-        // Unselect edilen bookmark en son sıraya kadar hareket ettirilebilir.
-      } else {
-        // Select ediliyorsa:
-        // Mevcut öğeyi en üst sıraya taşı
-        updatedCourses.splice(currentIndex, 1); // Mevcut yerden kaldır
-        updatedCourses.unshift(currentCourse); // En üste ekle
-      }
-
-      return updatedCourses;
-    });
-  };
   function CoursesItem({ item }) {
+    const itemRef = React.useRef();
+
+    const handlePress = () => {
+      itemRef.current.measure((x, y, width, height, pageX, pageY) => {
+        setModalPosition({ x: pageX, y: pageY });
+        setSelectedCourse(item);
+        setIsModalVisible(true);
+      });
+    };
+
     return (
-      <TouchableWithoutFeedback onPress={() => navigation.navigate('CoursesDetail', { courseTitle: item.title })}>
-        <View style={styles.CoursesItemStyle}>
+      <TouchableWithoutFeedback onPress={handlePress}>
+        <View ref={itemRef} style={styles.CoursesItemStyle}>
           <Image
-            source={courseImages[item.img]}
+            source={courseImages[item.image]}
             style={styles.CoursesImage}
           />
           <Text
@@ -170,7 +194,7 @@ export default function CoursesScreen() {
             style={styles.courseTitle}>
             {item.title}
           </Text>
-          
+
           <TouchableWithoutFeedback onPress={(e) => {
             e.stopPropagation();
           }}>
@@ -187,8 +211,6 @@ export default function CoursesScreen() {
     );
   }
 
-
-  //<Catagories setFilteredCourses={setFilteredCourses} coursesData={coursesData} />
   return (
     <View style={{ flex: 1, backgroundColor: colors.background.primary }}>
       <Animated.FlatList
@@ -199,9 +221,14 @@ export default function CoursesScreen() {
         renderItem={({ item }) => <CoursesItem item={item} />}
         ListHeaderComponent={<Catagories setFilteredCourses={setFilteredCourses} coursesData={coursesData} />}
         overScrollMode='never'
-        style={{  }}
-        contentContainerStyle={{ alignItems: 'center', paddingBottom: 40}}
+        contentContainerStyle={{ alignItems: 'center', paddingBottom: 40 }}
         ItemSeparatorComponent={() => { return <View style={{ marginVertical: 8 }} /> }}
+      />
+      <CourseActionModal
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+        course={selectedCourse}
+        position={modalPosition}
       />
     </View>
   )
@@ -210,41 +237,6 @@ export default function CoursesScreen() {
 
 
 const styles = StyleSheet.create({
-  DailyQuestionStyle: {
-    marginTop: 25,
-    marginHorizontal: 20,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: colors.accent,
-    backgroundColor: colors.background.card,
-    paddingVertical: 20,
-
-  },
-  DQTextStyle: {
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    color: colors.primary,
-    marginHorizontal: 10,
-  },
-  DQGButtonStyle: {
-    width: 120,
-    height: 40,
-    backgroundColor: colors.status.success,
-    borderRadius: 50,
-    justifyContent: 'center',
-    marginHorizontal: 20,
-
-  },
-  DQRButtonStyle: {
-    width: 120,
-    height: 40,
-    backgroundColor: colors.status.error,
-    borderRadius: 50,
-    justifyContent: 'center',
-    marginHorizontal: 20,
-
-  },
   CatagoriesItemStyle: {
     width: 120,
     height: 45,
@@ -256,12 +248,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: colors.primary,
     fontSize: 12,
-    textAlign:'center',
+    textAlign: 'center',
 
   },
   CoursesItemStyle: {
     width: 360,
-    height: 100,
+    height: COURSE_ITEM_HEIGHT,
     borderRadius: 25,
     backgroundColor: colors.background.primary,
     borderColor: colors.background.secondary,
@@ -284,9 +276,42 @@ const styles = StyleSheet.create({
   },
   IconContainer: {
     position: "absolute",
-    alignSelf:"center",
+    alignSelf: "center",
     justifyContent: "center",
     right: 10,
     backgroundColor: colors.background.primary,
+  },
+  modalOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  modalContainer: {
+    width: '70%',
+    backgroundColor: colors.primary,
+    borderRadius: 15,
+    padding: 20,
+    elevation: 5,
+  },
+
+  modalButtonContainer: {
+    gap: 15,
+  },
+  modalButton: {
+    height: 45,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3,
+  },
+  modalButtonText: {
+    color: colors.primary,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

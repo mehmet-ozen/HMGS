@@ -1,10 +1,12 @@
-
 {
-    "courses": [
+    "courses": 
+    [
       {
-        "id": "1",
-        "title": "Borçlar Hukuku",
-        "topics": [
+        "id": "0",
+        "title": "Anayasa Hukuku",
+        "image": "anayasa_hukuku",
+        "topics": 
+        [
           {
             "id": "1.1",
             "title": "Genel Bilgiler",
@@ -12,124 +14,515 @@
               {
                 "id": "1.1.1",
                 "title": "Sözleşmelerin Kurulması",
-                "mindMap": {
-                  "nodes": [
-                    {
-                      "id": "n1",
-                      "title": "Teklif",
-                      "type": "central",
-                      "content": "Teklif, bir sözleşmenin kurulması için yapılan ilk adımdır."
-                    },
-                    {
-                      "id": "n2",
-                      "title": "Kabul",
-                      "type": "central",
-                      "content": "Kabul, teklifi onaylama işlemidir."
-                    },
-                    {
-                      "id": "n3",
-                      "title": "Geçerlilik Şartları",
-                      "type": "central",
-                      "content": "Bir sözleşmenin geçerli olması için tarafların iradesi önemlidir."
-                    }
-                  ],
-                  "connections": [
-                    { "from": "n1", "to": "n2" },
-                    { "from": "n2", "to": "n3" }
-                  ]
-                }
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
               },
               {
                 "id": "1.1.2",
                 "title": "Sözleşmelerin Geçerliliği",
-                "mindMap": {
-                  "nodes": [
-                    {
-                      "id": "n1",
-                      "title": "Hukuka Uygunluk",
-                      "type": "central",
-                      "content": "Sözleşmelerin hukuka uygun olması gereklidir."
-                    },
-                    {
-                      "id": "n2",
-                      "title": "Ahlaka Aykırılık",
-                      "type": "central",
-                      "content": "Ahlaka aykırı sözleşmeler geçersizdir."
-                    }
-                  ],
-                  "connections": [
-                    { "from": "n1", "to": "n2" }
-                  ]
-                }
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
               }
             ]
           },
           {
             "id": "1.2",
             "title": "Özel Borç İlişkileri",
-            "subTopics": [
+            "subTopics": 
+            [
               {
                 "id": "1.2.1",
                 "title": "Kira Sözleşmeleri",
-                "mindMap": {
-                  "nodes": [
-                    {
-                      "id": "n1",
-                      "title": "Kiranın Unsurları",
-                      "type": "central",
-                      "content": "Kira sözleşmesinde kiracı ve kiraya veren taraflar vardır."
-                    },
-                    {
-                      "id": "n2",
-                      "title": "Kiranın Feshi",
-                      "type": "central",
-                      "content": "Kira sözleşmesi belirli durumlarda sona erdirilebilir."
-                    }
-                  ],
-                  "connections": [
-                    { "from": "n1", "to": "n2" }
-                  ]
-                }
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Kira Sözleşmeleri"
+                  }
+                ]
               }
             ]
           }
         ]
       },
       {
-        "id": "2",
-        "title": "Medeni Hukuk",
-        "topics": [
+        "id": "1",
+        "title": "Aile Hukuku",
+        "image": "aile_hukuku",
+        "topics": 
+        [
           {
-            "id": "2.1",
-            "title": "Kişiler Hukuku",
+            "id": "1.1",
+            "title": "Genel Bilgiler",
             "subTopics": [
               {
-                "id": "2.1.1",
-                "title": "Gerçek Kişiler",
-                "mindMap": {
-                  "nodes": [
-                    {
-                      "id": "n8",
-                      "title": "Fiil Ehliyeti",
-                      "type": "central",
-                      "content": "Fiil ehliyeti, kişilerin hukuki işlem yapabilme yetisidir."
-                    },
-                    {
-                      "id": "n9",
-                      "title": "Kişilik Hakları",
-                      "type": "central",
-                      "content": "Herkesin doğuştan sahip olduğu haklardır."
-                    }
-                  ],
-                  "connections": [
-                    { "from": "n8", "to": "n9" }
-                  ]
-                }
+                "id": "1.1.1",
+                "title": "Sözleşmelerin Kurulması",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              },
+              {
+                "id": "1.1.2",
+                "title": "Sözleşmelerin Geçerliliği",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1.2",
+            "title": "Özel Borç İlişkileri",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Kira Sözleşmeleri"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },      
+      {
+        "id": "2",
+        "title": "Borçlar Hukuku",
+        "image": "borclar_hukuku",
+        "topics": 
+        [
+          {
+            "id": "1.1",
+            "title": "Genel Bilgiler",
+            "subTopics": [
+              {
+                "id": "1.1.1",
+                "title": "Sözleşmelerin Kurulması",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              },
+              {
+                "id": "1.1.2",
+                "title": "Sözleşmelerin Geçerliliği",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1.2",
+            "title": "Özel Borç İlişkileri",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Kira Sözleşmeleri"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "title": "Eşya Hukuku",
+        "image": "esya_hukuku",
+        "topics": 
+        [
+          {
+            "id": "1.1",
+            "title": "Genel Bilgiler",
+            "subTopics": [
+              {
+                "id": "1.1.1",
+                "title": "Sözleşmelerin Kurulması",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              },
+              {
+                "id": "1.1.2",
+                "title": "Sözleşmelerin Geçerliliği",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1.2",
+            "title": "Özel Borç İlişkileri",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Kira Sözleşmeleri"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "title": "İcra ve İflas Hukuku",
+        "image": "icra_iflas_hukuku",
+        "topics": 
+        [
+          {
+            "id": "00.00.00",
+            "title": "Genel Bilgiler",
+            "subTopics": 
+            [
+              {
+                "id": "1.1.1",
+                "title": "Sözleşmelerin Kurulması"
+              },
+              {
+                "id": "1.1.2",
+                "title": "Sözleşmelerin Geçerliliği"
+              }
+            ]
+          },
+          {
+            "id": "00.00.01",
+            "title": "Cebri İcra Çeşitleri",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.02",
+            "title": "İcra Organları",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.03",
+            "title": "Şikayet",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.04",
+            "title": "İcra Takibinde Taraflar",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.05",
+            "title": "Genel Haciz Yoluyla Takip",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.06",
+            "title": "Ödeme Emrine İtirazın Hükümden Düşürülmesi",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.07",
+            "title": "İcra Takibinin İptali Ve Ertelenmesi",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.08",
+            "title": "Menfi Tespit Ve İstirdat Davası",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.09",
+            "title": "Mal Beyanı",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.10",
+            "title": "Haciz",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          },
+          {
+            "id": "00.00.11",
+            "title": "Paraya Çevirme",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "title": "İş Hukuku",
+        "image": "is_hukuku",
+        "topics": 
+        [
+          {
+            "id": "1.1",
+            "title": "Genel Bilgiler",
+            "subTopics": [
+              {
+                "id": "1.1.1",
+                "title": "Sözleşmelerin Kurulması",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              },
+              {
+                "id": "1.1.2",
+                "title": "Sözleşmelerin Geçerliliği",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1.2",
+            "title": "Özel Borç İlişkileri",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Kira Sözleşmeleri"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "title": "Medeni Usul Hukuku",
+        "image": "medeni_usul_hukuku",
+        "topics": 
+        [
+          {
+            "id": "1.1",
+            "title": "Genel Bilgiler",
+            "subTopics": [
+              {
+                "id": "1.1.1",
+                "title": "Sözleşmelerin Kurulması",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              },
+              {
+                "id": "1.1.2",
+                "title": "Sözleşmelerin Geçerliliği",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1.2",
+            "title": "Özel Borç İlişkileri",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Kira Sözleşmeleri"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "title": "Miras Hukuku",
+        "image": "miras_hukuku",
+        "topics": 
+        [
+          {
+            "id": "1.1",
+            "title": "Genel Bilgiler",
+            "subTopics": [
+              {
+                "id": "1.1.1",
+                "title": "Sözleşmelerin Kurulması",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              },
+              {
+                "id": "1.1.2",
+                "title": "Sözleşmelerin Geçerliliği",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Sözleşmelerin Kurulması"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": "1.2",
+            "title": "Özel Borç İlişkileri",
+            "subTopics": 
+            [
+              {
+                "id": "1.2.1",
+                "title": "Kira Sözleşmeleri",
+                "content": 
+                [
+                  {
+                    "id": "1",
+                    "text": "Kira Sözleşmeleri"
+                  }
+                ]
               }
             ]
           }
         ]
       }
     ]
-  }
+}
   
