@@ -37,25 +37,26 @@ const RootStack = createNativeStackNavigator({
     Courses: {
       screen: CoursesScreen,
       options: {
-        headerStyle: { backgroundColor: colors.background.primary },
+        headerStyle: { backgroundColor: colors.primary },
         animation: 'slide_from_bottom',
         presentation: 'modal',
         headerTitle: 'Dersler',
-        headerTitleStyle: { color: colors.text.primary},
+        headerTitleStyle: { color: colors.text.white},
+        headerTintColor: colors.text.white,
       }
     },
     CoursesDetail: {
       screen: CoursesDetailScreen,
       options: {
-        headerStyle: { backgroundColor: colors.background.primary },
-        headerTitleStyle: { color: colors.text.primary },
+        headerTitleStyle: { color: colors.text.white},
+        headerTintColor: colors.text.white,
       }
     },
     Notes: {
       screen: NotesScreen,
       options: ({ navigation }) => ({
-        headerTitleStyle: { color: colors.text.primary },
-        headerStyle: { backgroundColor: colors.background.primary },
+        headerTitleStyle: { color: colors.text.white},
+        headerTintColor: colors.text.white,
         animation: 'slide_from_bottom',
         headerBackVisible: false,
         presentation: 'fullScreenModal',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, Platform, Pressable, Vibration } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, {
   useAnimatedStyle,
@@ -14,81 +14,101 @@ import { colors } from '../theme/colors';
 import { StatusBar } from 'expo-status-bar';
 
 const AccordionItem = ({ course, navigation }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const isExpanded = useSharedValue(false);
   const rotation = useSharedValue(0);
   const height = useSharedValue(0);
-  const [contentHeight, setContentHeight] = useState(100);
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      height: height.value,
-      opacity: interpolate(
-        height.value,
-        [0, contentHeight],
-        [0, 1]
-      ),
-      overflow: 'hidden',
-    };
-  });
+  const [contentHeight, setContentHeight] = useState(200);
 
-  const iconStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${rotation.value}deg` }],
-    };
-  });
+  const animatedStyles = useAnimatedStyle(() => ({
+    height: height.value,
+    opacity: interpolate(height.value, [0, contentHeight], [0, 1]),
+
+  }));
+
+  const iconStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
+
 
   const toggleAccordion = () => {
-    const finalHeight = isExpanded ? 0 : contentHeight;
-    height.value = withSpring(finalHeight, {
-      damping: 20,
-      mass: 0.8,
-      stiffness: 120,
-      velocity: 0.5
+    const finalHeight = isExpanded.value ? 0 : contentHeight;
+    height.value = withTiming(finalHeight, {
+      duration: 300,
     });
 
-    rotation.value = withTiming(isExpanded ? 0 : 180, {
+    rotation.value = withTiming(isExpanded.value ? 0 : 180, {
       duration: 250
     });
 
-    setIsExpanded(!isExpanded);
+    isExpanded.value = !isExpanded.value;
   };
-
-  useEffect(() => {
-    const subTopicsHeight = course.subTopics.length * 60;
-    setContentHeight(subTopicsHeight);
-  }, [course.subTopics]);
-
+  
+console.log(course);
   return (
-    <View style={styles.accordionContainer}>
-      <StatusBar backgroundColor={colors.primary} />
-      <TouchableOpacity
-        style={styles.topicItem}
+    <Animated.View style={styles.accordionContainer}>
+      <Pressable
+        style={({ pressed }) => [
+          styles.topicItem,
+          pressed && styles.topicItemPressed
+        ]}
         onPress={toggleAccordion}
-        activeOpacity={1}
       >
-        <Text style={styles.topicTitle}>{course.title}</Text>
-        <Animated.View style={iconStyle}>
-          <Ionicons
-            name="chevron-down"
-            size={24}
-            color={colors.primary}
-          />
-        </Animated.View>
-      </TouchableOpacity>
-
-      <Animated.View
-        style={[styles.subTopicsContainer, animatedStyles]}
-      >
-        {course.subTopics.map((subTopic) => (
-          <TouchableOpacity
+        <View style={styles.topicHeader}>
+          <View style={styles.topicInfo}>
+            <Ionicons
+              name="book-outline"
+              size={24}
+              color={colors.primary}
+              style={styles.topicIcon}
+            />
+            <View>
+              <Text style={styles.topicTitle}>{course.title}</Text>
+              <Text style={styles.topicSubtitle}>
+                {course.subTopics.length} alt başlık
+              </Text>
+            </View>
+          </View>
+          <Animated.View style={iconStyle}>
+            <Ionicons
+              name="chevron-down"
+              size={24}
+              color={colors.primary}
+            />
+          </Animated.View>
+        </View>
+      </Pressable>
+      <Animated.FlatList
+        data={course.subTopics}
+        renderItem={({item: subTopic, index}) => (
+          <Pressable
             key={subTopic.id}
-            style={styles.subTopicItem}
-            onPress={() => navigation.navigate('Notes', { topic: subTopic })}
+            style={({ pressed }) => [
+              styles.subTopicItem,
+              pressed && styles.subTopicItemPressed
+            ]}
+            onPress={() => {
+              Vibration.vibrate(50);
+              setTimeout(() => {
+                navigation.navigate('Notes', { topic: subTopic });
+              }, 100);
+            }}
           >
-            <Text style={styles.subTopicTitle}>{subTopic.title}</Text>
-          </TouchableOpacity>
-        ))}
-      </Animated.View>
-    </View>
+            <View style={styles.subTopicContent}>
+              <View style={styles.subTopicNumber}>
+                <Text style={styles.numberText}>{index + 1}</Text>
+              </View>
+              <View style={styles.subTopicInfo}>
+                <Text style={styles.subTopicTitle}>{subTopic.title}</Text>
+                <Text style={styles.subTopicDuration}>15 dakika</Text>
+              </View>
+            <Ionicons name="arrow-forward" size={20} color={colors.text.light} />
+            </View>
+          </Pressable>
+        )}
+        keyExtractor={(subTopic) => subTopic.id}
+        style={[styles.subTopicsContainer, animatedStyles]}
+      />
+    </Animated.View>
   );
 };
 
@@ -106,13 +126,13 @@ export default function CoursesDetailScreen({ route }) {
   return (
     <View style={styles.container}>
       {course === null ? <Text>Ders Bulunamadı</Text> :
-      <FlatList
-        data={course.topics}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContainer}
-      />}
+        <Animated.FlatList
+          data={course.topics}
+          renderItem={renderItem}
+          keyExtractor={item => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.listContainer}
+        />}
     </View>
   );
 }
@@ -126,35 +146,92 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   accordionContainer: {
-    marginBottom: 8,
+    marginBottom: 16,
+    backgroundColor: colors.background.card,
+    borderRadius: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    overflow: 'hidden',
   },
   topicItem: {
+    padding: 16,
+  },
+  topicItemPressed: {
+    opacity: 0.8,
+    backgroundColor: colors.background.secondary,
+  },
+  topicHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: colors.background.secondary,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: colors.primary,
+  },
+  topicInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  topicIcon: {
+    marginRight: 12,
   },
   topicTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: colors.primary,
+    color: colors.text.primary,
+  },
+  topicSubtitle: {
+    fontSize: 13,
+    color: colors.text.light,
+    marginTop: 2,
   },
   subTopicsContainer: {
-    marginLeft: 20,
+    paddingHorizontal: 16,
+    overflow: 'hidden',
+
   },
   subTopicItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 12,
-    backgroundColor: colors.background.card,
-    borderLeftWidth: 2,
-    borderColor: colors.primary,
-    marginTop: 4,
+    backgroundColor: colors.background.secondary,
+    borderRadius: 12,
+    marginTop: 8,
+  },
+  subTopicItemPressed: {
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
+  },
+  subTopicContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  subTopicNumber: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  numberText: {
+    color: colors.text.white,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  subTopicInfo: {
+    flex: 1,
   },
   subTopicTitle: {
     fontSize: 16,
-    color: colors.primary,
+    color: colors.text.primary,
+    marginBottom: 4,
+  },
+  subTopicDuration: {
+    fontSize: 12,
+    color: colors.text.light,
   },
 });

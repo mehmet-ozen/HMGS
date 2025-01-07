@@ -42,7 +42,7 @@ export default function HomeScreen() {
         <View style={styles.topSection}>
         <View style={styles.topBackground}/>
           <Image
-            source={require('../../assets/images/pp_1.png')}
+            source={require('../../assets/images/pp_8.png')}
             style={styles.circleImage}
           />
         <Animated.View 

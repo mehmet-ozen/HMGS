@@ -1,11 +1,10 @@
 import React from 'react';
 import {
-  Pressable,
-  SafeAreaView,
   StyleSheet,
-  Text,
-  View,
   TouchableOpacity,
+  Dimensions,
+  Pressable,
+  useWindowDimensions,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -13,105 +12,72 @@ import Animated, {
   useDerivedValue,
   withDelay,
   withTiming,
+  withSpring,
 } from 'react-native-reanimated';
+import { colors } from '../theme/colors';
+
+// const { height: SCREEN_HEIGHT } = useWindowDimensions();
 
 export default function BottomSheet({ isOpen, toggleSheet, duration = 500, children }) {
   const height = useSharedValue(0);
   const progress = useDerivedValue(() =>
-    withTiming(isOpen.value ? 0 : 1, { duration })
+    withSpring(isOpen.value ? 0 : 1, {
+      damping: 20,
+      stiffness: 200,
+      mass: 0.5,
+    })
   );
-
+  // const progress = useDerivedValue(() =>
+  //   withTiming(isOpen.value ? 0 : 1 * { duration })
+  // );
   const sheetStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: progress.value * 2 * height.value }],
+    transform: [{ translateY: progress.value * height.value }],
+    opacity: withTiming(isOpen.value ? 1 : 0, { duration: duration / 4 }),
   }));
 
-  const backgroundColorSheetStyle = {
-    backgroundColor: '#f8f9ff',
-  };
-
   const backdropStyle = useAnimatedStyle(() => ({
-    opacity: 1 - progress.value,
-    zIndex: isOpen.value
-      ? 1
-      : withDelay(duration, withTiming(-1, { duration: 0 })),
+    opacity: withTiming(isOpen.value ? 1 : 0, { duration: duration / 4 }),
+    zIndex: isOpen.value ? 1 : -1,
   }));
 
   return (
     <>
-      <Animated.View style={[sheetStyles.backdrop, backdropStyle]}>
-        <TouchableOpacity style={styles.flex} onPress={toggleSheet} />
+      <Animated.View style={[styles.backdrop, backdropStyle]}>
+        <Pressable 
+          style={styles.flex} 
+          onPress={toggleSheet}
+          activeOpacity={1}
+        />
       </Animated.View>
 
       <Animated.View
         onLayout={(e) => {
           height.value = e.nativeEvent.layout.height;
         }}
-        style={[sheetStyles.sheet, sheetStyle, backgroundColorSheetStyle]}>
+        style={[styles.sheet, sheetStyle]}>
         {children}
       </Animated.View>
     </>
   );
 }
 
-const sheetStyles = StyleSheet.create({
-  sheet: {
-    padding: 16,
-    paddingRight: '2rem',
-    paddingLeft: '2rem',
-    height: 150,
-    width: '100%',
-    position: 'absolute',
-    bottom: 0,
-    borderTopRightRadius: 20,
-    borderTopLeftRadius: 20,
-    zIndex: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  backdrop: Object.assign(Object.assign({}, StyleSheet.absoluteFillObject), {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-  }),
-});
-
-
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  container: {
-    flex: 1,
-    height: 250,
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    zIndex: 1,
   },
-  buttonContainer: {
-    marginTop: 16,
-    display: 'flex',
-    flexDirection: 'row',
+  sheet: {
+    position: 'absolute',
     width: '100%',
-    justifyContent: 'space-around',
-  },
-  toggleButton: {
-    backgroundColor: '#b58df1',
-    padding: 12,
-    borderRadius: 48,
-  },
-  toggleButtonText: {
-    color: 'white',
-    padding: '0.5rem',
-  },
-  safeArea: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-  bottomSheetButton: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingBottom: 2,
-  },
-  bottomSheetButtonText: {
-    fontWeight: 600,
-    textDecorationLine: 'underline',
+    backgroundColor: colors.background.card,
+    bottom: 0,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    zIndex: 2,
+    overflow: 'hidden',
   },
 });

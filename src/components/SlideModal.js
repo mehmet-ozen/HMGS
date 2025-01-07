@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -10,15 +10,26 @@ import Animated, {
 } from 'react-native-reanimated';
 import { colors } from '../theme/colors';
 
-export default function SlideModal({ isOpen, toggleModal, duration = 300, children,speed=10 }) {
+export default function SlideModal({ 
+  isOpen, 
+  toggleModal, 
+  duration = 300, 
+  children, 
+  speed = 10,
+}) {
+  const { height: windowHeight } = useWindowDimensions();
   const height = useSharedValue(0);
   
+  const contentHeight = useDerivedValue(() => {
+    return windowHeight/2 - height.value;
+  });
+
   const progress = useDerivedValue(() =>
     withTiming(isOpen.value ? 0 : 1 * speed, { duration })
   );
 
   const modalStyle = useAnimatedStyle(() => ({
-    transform: [{ translateY: progress.value * height.value }],
+    transform: [{ translateY: (progress.value * height.value) + contentHeight.value }],
     opacity: withTiming(isOpen.value ? 1 : 0, { duration }),
   }));
 
@@ -34,10 +45,10 @@ export default function SlideModal({ isOpen, toggleModal, duration = 300, childr
       </Animated.View>
 
       <Animated.View
+        style={[styles.modal, modalStyle]}
         onLayout={(e) => {
           height.value = e.nativeEvent.layout.height;
-        }}
-        style={[styles.modal, modalStyle]}>
+        }}>
         {children}
       </Animated.View>
     </>
@@ -57,7 +68,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: '10%',
     right: '10%',
-    top: '40%',
     backgroundColor: colors.background.primary,
     borderRadius: 20,
     padding: 20,
