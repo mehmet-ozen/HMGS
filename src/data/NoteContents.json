@@ -1,15 +1,37 @@
 {
   "contents": [
     {
-      "id": "content_04.10.01",
+      "id": "content_04.00.01",
       "items": [
         {
           "id": "1",
-          "text": "Sözleşme kurma aşamaları"
+          "title": "Giriş",
+          "content": "<h1><strong>Tutuklama Kararı Ne Zaman Verilebilir?</strong></h1>\n<p>Bir kişiyi tutuklayabilmek için <strong>iki temel şartın</strong> bir arada bulunması gerekiyor:</p>\n<ul>    <li><strong>Kuvvetli suç şüphesinin varlığını gösteren somut deliller</strong> olmalı.</li>\n    <li><strong>Bir tutuklama nedeninin bulunması</strong> lazım.</li>\n</ul>\n<p>Yani şöyle düşünün: Sadece \"Ben bu kişiden şüpheleniyorum\" demek yetmez. Bu şüpheyi destekleyen <strong>somut deliller</strong> ortaya konmalı. Örneğin, olay yerinde parmak izleri, güvenlik kamerası görüntüleri gibi.</p>"
         },
         {
           "id": "2",
-          "text": "Teklif ve kabul süreci"
+          "title": "Temel Kavramlar",
+          "content": "<h1><strong>Tutuklama Nedenleri Nelerdir?</strong></h1><p>Bazı durumlarda, <strong>tutuklama nedeni olduğu varsayılabilir.</strong> Bunlar ne peki?<ol><li><strong>Kaçma veya saklanma ihtimali varsa:</strong><br>Diyelim ki bir kişi olaydan sonra ortadan kaybolmaya çalışıyor, adresini gizliyor veya yurtdışına kaçma hazırlığı yapıyor. Bu durumda, \"kaçacak\" şüphesi doğar.<li><strong>Delilleri karartma veya tanıkları etkileme ihtimali varsa:</strong><br>Mesela, bir kişi suçun delillerini yok etmeye çalışıyorsa ya da tanıklara \"Hakkımda konuşursan, seni tehdit ederim\" diyorsa, bu da kuvvetli bir şüphe oluşturur.</ol><h2><strong>Katalog Suçlar</strong></h2><p>Bir de kanunda özel olarak sayılmış suçlar var, bunlara <strong>katalog suçlar</strong> deniyor. CMK 100/3'te belirtilen bu suçlar için tutuklama nedeni <strong>doğrudan varsayılabiliyor.</strong> Örneğin, adam öldürme, cinsel saldırı, uyuşturucu ticareti gibi ağır suçlar.</p>"
+        },
+        {
+          "id": "3",
+          "title": "Önemli Noktalar",
+          "content": "<h1><strong>Hangi Suçlarda Tutuklama Kararı Verilemez?</strong></h1><p>Bakın, burada çok önemli bir sınırlama var:<ul><li><strong>Sadece adlî para cezasını gerektiren suçlarda</strong> tutuklama kararı verilemez.<li>Aynı şekilde, <strong>üst sınırı iki yıldan fazla olmayan suçlarda</strong> da tutuklama kararı verilemez.</ul><p>Örneğin, komşunun bahçesine izinsiz giren bir kişinin (hukuki adıyla konut dokunulmazlığını ihlal) üst sınırı 1 yıl olan bir suç işlediğini düşünelim. Bu kişi hakkında tutuklama kararı verilmesi mümkün değil."
+        },
+        {
+          "id": "4",
+          "title": "Yargı Sistemi",
+          "content": "<h1><strong>Tutuklama Kararını Kim Veriyor?</strong></h1><p>Tutuklama kararı, her aşamada <strong>yetkili bir makam</strong> tarafından verilir:<ul><li><strong>Soruşturma evresinde</strong>, Cumhuriyet savcısının istemi üzerine <strong>sulh ceza hâkimi</strong> tutuklama kararı verir.<li><strong>Kovuşturma evresinde</strong>, mahkeme bu kararı ya savcının istemiyle ya da kendiliğinden alabilir.</ul><p><strong>Önemli bir detay:</strong> Bu kararda mutlaka somut gerekçelerle <strong>neden tutuklandığı açıkça belirtilmelidir.</strong>"
+        },
+        {
+          "id": "5",
+          "title": "Hukuk Dalları",
+          "content": "<h1><strong>Tutukluluk Süreleri</strong></h1><p>Tutukluluk süresi sınırsız değildir. İşin ağırlığına göre belirli sınırlar vardır:<h4><strong>a) Ağır Ceza Mahkemesinin Görevine Girmeyen İşler</strong></h4><ul><li>Tutukluluk süresi <strong>en fazla 1 yıldır.</strong><li>Eğer gerekçeler gösterilirse bu süre <strong>6 ay daha</strong> uzatılabilir.</ul><h4><strong>b) Ağır Ceza Mahkemesinin Görevine Giren İşler</strong></h4><ul><li>Bu durumda süre biraz daha uzundur: <strong>En fazla 2 yıl.</strong><li>Ancak gerekçelerle birlikte <strong>3 yıl daha uzatılabilir.</strong><li>Eğer iş terör suçlarıyla ilgiliyse, toplam süre <strong>5 yıla kadar</strong> çıkabilir.</ul><h4><strong>c) Soruşturma Evresinde Tutukluluk</strong></h4><ul><li>Ağır ceza kapsamına <strong>girmeyen</strong> suçlarda en fazla <strong>6 ay</strong>,<li>Ağır ceza kapsamına <strong>giren</strong> suçlarda ise en fazla <strong>1 yıl</strong> olabilir.</ul><h4><strong>d) Çocuklar İçin Özel Düzenlemeler</strong></h4><ul><li>15 yaşını doldurmamış çocuklar için süreler yarıya iner.<li>18 yaşını doldurmamış çocuklar için süreler <strong>dörtte üç oranında</strong> uygulanır.<li>Ayrıca, 15 yaşından küçük çocukların işlediği ve ceza üst sınırı <strong>5 yılı aşmayan suçlarda</strong> tutuklama kararı verilemez.</ul>"
+        },
+        {
+          "id": "6",
+          "title": "Hukuk Dalları",
+          "content": "<h1><strong>Şüphelinin Müdafii Olmalı!</strong></h1><p>Bir kişi hakkında tutuklama talep edildiğinde, mutlaka bir avukatın yardımı olmalıdır. Bu kişi ya kendi seçtiği bir avukat olabilir ya da baro tarafından görevlendirilmiş bir avukat bu sürece dahil olur."
         }
       ]
     },

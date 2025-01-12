@@ -3,8 +3,9 @@ import { colors } from '../theme/colors';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import Animated, { FadeInDown, useSharedValue } from 'react-native-reanimated';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import BottomSheet from '../components/BottomSheet';
 
 const { width } = Dimensions.get('window');
 
@@ -31,10 +32,27 @@ const DailyQuestionCard = () => (
   </TouchableOpacity>
 );
 
+const HomeButton = ({ onPress, title, icon, color, style }) => (
+  <TouchableOpacity
+    style={[styles.button, { backgroundColor: color }, style]}
+    onPress={onPress}
+  >
+    <View style={styles.buttonContent}>
+      <View style={styles.iconContainer}>
+        <Ionicons name={icon} size={24} color={colors.text.white} />
+      </View>
+      <Text style={styles.buttonText}>{title}</Text>
+    </View>
+  </TouchableOpacity>
+);
+
 export default function HomeScreen() {
   const navigation = useNavigation();
   const userName = "Mehmet"; // Kullanıcı adını buradan değiştirebilirsiniz
-
+  const isOpen = useSharedValue(0);
+  const toggleSheet = () => {
+    isOpen.value = !isOpen.value;
+  }
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={colors.primary} style="auto"/>
@@ -59,7 +77,6 @@ export default function HomeScreen() {
 
         <DailyQuestionCard />
         </View>
-
 
         {/* <View style={styles.statsContainer}>
           <View style={styles.statItem}>
@@ -95,30 +112,46 @@ export default function HomeScreen() {
         </View> */}
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: colors.primary }]}
+          <HomeButton
+            title="DERSLER"
+            icon="book-outline"
+            color={colors.primary}
             onPress={() => navigation.navigate('Courses')}
-          >
-            <View style={styles.buttonContent}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="book-outline" size={24} color={colors.text.white} />
-              </View>
-              <Text style={styles.buttonText}>DERSLER</Text>
-            </View>
-          </TouchableOpacity>
+          />
 
-          <TouchableOpacity 
-            style={[styles.button, { backgroundColor: colors.secondary }]}
-            onPress={() => {}}
-          >
-            <View style={styles.buttonContent}>
-              <View style={styles.iconContainer}>
-                <Ionicons name="help-circle-outline" size={24} color={colors.text.white} />
-              </View>
-              <Text style={styles.buttonText}>SORU BANKASI</Text>
-            </View>
-          </TouchableOpacity>
+          <HomeButton
+            title="SORU YARIŞMASI"
+            icon="trophy-outline"
+            color={colors.secondary}
+            onPress={() => navigation.navigate('WheelScreen')}
+          />
+            <HomeButton
+              title="AYARLAR"
+              icon="settings-outline"
+              color={colors.quaternary}
+              onPress={() => navigation.navigate('Settings')}
+            />
+          {/* <View style={styles.smallButtonsRow}>
+            <HomeButton
+              title="AYARLAR"
+              icon="settings-outline"
+              color={colors.quaternary}
+              style={styles.smallButton}
+              onPress={() => navigation.navigate('Settings')}
+            />
+            
+            <HomeButton
+              title="PROFİL"
+              icon="person-outline"
+              color={colors.quaternary}
+              style={styles.smallButton}
+              onPress={() => navigation.navigate('Profile')}
+            />
+          </View> */}
         </View>
+        {/* <BottomSheet isOpen={isOpen} toggleSheet={toggleSheet} duration={500}>
+          <Text>asd</Text>
+        </BottomSheet> */}
       </View>
     </SafeAreaView>
   );
@@ -133,8 +166,8 @@ const styles = StyleSheet.create({
     height: 420, // Yüksekliği artırdık
     backgroundColor: colors.primary,
     position: 'absolute',
-    borderBottomLeftRadius: 50,
-    borderBottomRightRadius: 50,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
     top: 0,
     left: 0,
     right: 0
@@ -166,14 +199,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingHorizontal: 20,
     marginTop: 40,
-    gap: 20,
+    gap: 15,
   },
   button: {
     height: 60,
-    borderRadius: 30,
+    borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 5,
+    elevation: 2,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -181,11 +214,13 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   buttonText: {
     color: colors.text.white,
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '700',
     flex: 1,
   },
   dailyQuestionCard: {
@@ -267,12 +302,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 30,
+    paddingHorizontal: 25,
   },
   iconContainer: {
     width: 30,
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 10,
   },
   logoContainer: {
     alignItems: 'center',
@@ -286,5 +321,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     opacity: 0.9,
     textAlign: 'center',
+  },
+  smallButtonsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 15,
+  },
+  smallButton: {
+    flex: 1,
+    height: 50,
   },
 });

@@ -9,7 +9,8 @@ export const colors = {
     background: {
         primary: '#FDFDFD',  // Ana arka plan
         secondary: '#F5F5F5', // İkincil arka plan
-        card: '#FFFFFF',     // Kart arka planı
+        card: '#FFFFFF',// Kart arka planı
+        dark: '#cccdcf'     
     },
 
     // Metin renkleri
@@ -47,5 +48,8 @@ export const colors = {
     border: {
         light: '#E0E0E0',    // Açık kenarlık
         dark: '#BDBDBD',     // Koyu kenarlık
-    }
+    },
+
+    tertiary: '#4A90E2',  // Ayarlar butonu için
+    quaternary: '#9B59B6', // Profil butonu için
 }; 

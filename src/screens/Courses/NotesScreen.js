@@ -1,133 +1,49 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, Modal, TextInput, ScrollView, Button, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Animated, {
   useSharedValue,
-  withSpring,
   useAnimatedStyle,
-  LinearTransition,
-  interpolate,
+  withTiming,
+  Easing,
+  useAnimatedReaction,
+  useDerivedValue,
 } from 'react-native-reanimated';
-import { colors } from '../theme/colors';
-import { CommonActions, useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import SlideModal from '../components/SlideModal';
-import { Pressable, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { colors } from '../../theme/colors';
+import { useNavigation } from '@react-navigation/native';
+import SlideModal from '../../components/SlideModal';
+import { Pressable } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
-import { actions, RichEditor, RichToolbar } from 'react-native-pell-rich-editor';
-import { HighlightBridge, LinkBridge, RichText, Toolbar, useEditorBridge, useEditorContent } from '@10play/tentap-editor';
+import { RichText, Toolbar, useEditorBridge, useEditorContent } from '@10play/tentap-editor';
 import WebView from 'react-native-webview';
+import contents from '../../data/noteContents.json';
+import { PageIndicator } from 'react-native-page-indicator';
 
 const { width, height } = Dimensions.get('window');
 // Örnek not verileri
-const notesData = [
-  {
-    id: '1',
-    title: 'Giriş',
-    content: `
-      <h1>Hukuk Nedir?</h1>
-      <p>Hukuk, toplumsal yaşamı düzenleyen ve uyulması devlet gücüyle desteklenmiş kurallar bütünüdür.</p>
-      <h2>Hukukun Temel İlkeleri</h2>
-      <ul>
-        <li>Adalet</li>
-        <li>Eşitlik</li>
-        <li>Tarafsızlık</li>
-      </ul>
-    `
-  },
-  {
-    id: '2',
-    title: 'Temel Kavramlar',
-    content: `
-      <h1>Hukukun Kaynakları</h1>
-      <p>Hukukun kaynakları asli kaynaklar ve yardımcı kaynaklar olarak ikiye ayrılır.</p>
-      <h2>Asli Kaynaklar</h2>
-      <ul>
-        <li>Anayasa</li>
-        <li>Kanun</li>
-        <li>Uluslararası Antlaşmalar</li>
-      </ul>
-    `
-  },
-  {
-    id: '3',
-    title: 'Önemli Noktalar',
-    content: `
-      <h1>Hak ve Borç Kavramları</h1>
-      <p>Hak, hukuk düzeninin kişilere tanıdığı yetkilerdir.</p>
-      <h2>Hak Türleri</h2>
-      <ul>
-        <li>Kamu Hakları</li>
-        <li>Özel Haklar</li>
-      </ul>
-    `
-  },
-  {
-    id: '4',
-    title: 'Hukuk Sistemleri',
-    content: `
-      <h1>Dünya Hukuk Sistemleri</h1>
-      <p>Dünyada başlıca üç hukuk sistemi vardır:</p>
-      <ul>
-        <li>Kıta Avrupası Hukuk Sistemi</li>
-        <li>Anglo-Sakson Hukuk Sistemi</li>
-        <li>İslam Hukuk Sistemi</li>
-      </ul>
-    `
-  },
-  {
-    id: '5',
-    title: 'Yargı Sistemi',
-    content: `
-      <h1>Türk Yargı Sistemi</h1>
-      <p>Türk yargı sistemi üç ana dala ayrılır:</p>
-      <ul>
-        <li>Adli Yargı</li>
-        <li>İdari Yargı</li>
-        <li>Anayasa Yargısı</li>
-      </ul>
-    `
-  },
-  {
-    id: '6',
-    title: 'Hukuk Dalları',
-    content: `
-      <h1>Temel Hukuk Dalları</h1>
-      <p>Hukuk çeşitli dallara ayrılır:</p>
-      <ul>
-        <li>Kamu Hukuku</li>
-        <li>Özel Hukuk</li>
-        <li>Karma Hukuk Dalları</li>
-      </ul>
-    `
-  }
-];
 
-const SPRING_CONFIG = {
-  damping: 15,
-  stiffness: 100,
-  mass: 0.5,
-};
+
 
 const NoteCard = React.memo(({ content, onEdit }) => (
   <Animated.View style={styles.noteCard}>
     <TouchableOpacity style={styles.editButton} onPress={onEdit}>
       <Ionicons name="pencil" size={20} color={colors.primary} />
     </TouchableOpacity>
-    
+
     <WebView
-    linkText={true}
-    allowsLinkPreview={true}
-    showsVerticalScrollIndicator={false}
-    
-      source={{ html: `
+      linkText={true}
+      allowsLinkPreview={true}
+      showsVerticalScrollIndicator={false}
+
+      source={{
+        html: `
         <html>
           <head>
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <style>
               body {
                 font-family: -apple-system, system-ui;
-                line-height: 1.8;
+                line-height: 1.4;
                 color: #2C3E50;
                 padding: 16px;
                 margin: 0;
@@ -135,7 +51,7 @@ const NoteCard = React.memo(({ content, onEdit }) => (
               h1 {
                 font-size: 26px;
                 color: ${colors.primary};
-                margin-bottom: 20px;
+                margin-bottom: 25px;
                 font-weight: 700;
               }
               h2 {
@@ -145,7 +61,7 @@ const NoteCard = React.memo(({ content, onEdit }) => (
                 font-weight: 600;
               }
               p {
-                font-size: 16px;
+                font-size: 18px;
                 margin-bottom: 16px;
                 color: #2C3E50;
               }
@@ -154,6 +70,7 @@ const NoteCard = React.memo(({ content, onEdit }) => (
                 margin-bottom: 20px;
               }
               li {
+                font-size: 18px;
                 margin-bottom: 12px;
                 line-height: 1.6;
               }
@@ -208,22 +125,29 @@ export default function NotesScreen({ route }) {
   const navigation = useNavigation();
   const flatListRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const progressAnimation = useSharedValue(0);
-
   const isOpen = useSharedValue(0);
   const toggleSheet = useCallback(() => {
     isOpen.value = isOpen.value === 0 ? 1 : 0;
   }, []);
 
   const [editingNote, setEditingNote] = useState(null);
-  const [notes, setNotes] = useState(notesData);
+  const [notes, setNotes] = useState([]);
   const isEditModalOpen = useSharedValue(0);
+
+  useEffect(() => {
+    if (topic?.contentId) {
+      const content = contents.contents.find(c => c.id === topic.contentId);
+      if (content && content.items) {
+        setNotes(content.items);
+      }
+    }
+  }, [topic]);
 
   const editor = useEditorBridge({
     autoFocus: true,
 
   });
-  const editedContent = useEditorContent(editor, {type: 'html'});
+  const editedContent = useEditorContent(editor, { type: 'html' });
 
   useEffect(() => {
     editedContent && console.log(editedContent);
@@ -263,19 +187,7 @@ export default function NotesScreen({ route }) {
     if (navigation.isFocused()) {
       navigation.setOptions({
         title: topic.title,
-        headerRight: () => (
-          <Pressable onPress={toggleSheet} style={styles.headerButton}>
-            <View style={styles.closeButton}>
-              <Ionicons 
-                name="close-outline" 
-                size={28} 
-                color={colors.text.white} 
-              />
-            </View>
-          </Pressable>
-        )
       });
-      updateProgress(0);
     }
   }, []);
 
@@ -292,11 +204,6 @@ export default function NotesScreen({ route }) {
     };
   }, [navigation, toggleSheet]);
 
-  const updateProgress = (page) => {
-    const progress = ((page + 1) / notes.length) * 100;
-    progressAnimation.value = withSpring(progress, SPRING_CONFIG);
-  };
-
   const changePage = useCallback((newPage) => {
     // Sınırları kontrol et
     if (newPage < 0) return; // Negatif index'e izin verme
@@ -309,7 +216,6 @@ export default function NotesScreen({ route }) {
         viewPosition: 0
       });
       setCurrentPage(newPage);
-      updateProgress(newPage);
     } catch (error) {
       console.warn('Scroll error:', error);
       // Hata durumunda alternatif scroll
@@ -318,22 +224,11 @@ export default function NotesScreen({ route }) {
         animated: true
       });
       setCurrentPage(newPage);
-      updateProgress(newPage);
     }
-  }, [notes.length, updateProgress, width]);
-
-  const progressStyle = useAnimatedStyle(() => {
-    return {
-      width: `${progressAnimation.value}%`,
-      height: '100%',
-      backgroundColor: colors.primary,
-      borderRadius: 8,
-      position: 'absolute',
-    };
-  });
-
+  }, [notes.length, width]);
 
   const handleExit = useCallback(() => {
+    toggleSheet();
     navigation.goBack();
   }, [navigation]);
 
@@ -341,15 +236,14 @@ export default function NotesScreen({ route }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={colors.primary} />
-      <View style={styles.header}>
-        <View style={styles.progressWrapper}>
-          <View style={styles.progressBarContainer}>
-            <Animated.View style={progressStyle} />
-          </View>
-          <Animated.Text style={styles.progressText}>
-            {`%${Math.round(((currentPage + 1) / notes.length) * 100)}`}
-          </Animated.Text>
-        </View>
+      <View style={styles.pageIndicatorContainer}>
+        <PageIndicator
+          current={currentPage}
+          count={notes.length}
+          color={colors.primary}
+          size={10}
+          variant='beads'
+        />
       </View>
 
       <Animated.FlatList
@@ -441,15 +335,15 @@ export default function NotesScreen({ route }) {
           </View>
         </View>
         <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{
-          position: 'absolute',
-          width: '100%',
-          bottom: 0,
-        }}
-      >
-        <Toolbar editor={editor} />
-      </KeyboardAvoidingView>
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{
+            position: 'absolute',
+            width: '100%',
+            bottom: 0,
+          }}
+        >
+          <Toolbar editor={editor} />
+        </KeyboardAvoidingView>
       </SlideModal>
 
 
@@ -470,12 +364,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  header: {
-    paddingHorizontal: 20,
-    paddingVertical: 8,
-    overflow: 'hidden',
-    elevation:5,
-  },
+
   progressWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -535,12 +424,11 @@ const styles = StyleSheet.create({
   navigationContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    elevation:5,
     paddingHorizontal: 16,
     paddingVertical: 20,
     backgroundColor: colors.background.secondary,
     borderTopWidth: 1,
-    borderTopColor: colors.background.secondary,
+    borderTopColor: colors.border.light,
   },
   navButton: {
     paddingVertical: 12,
@@ -586,8 +474,8 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2,
     },
-    width:width,
-    height:height,
+    width: width,
+    height: height,
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
@@ -686,5 +574,17 @@ const styles = StyleSheet.create({
   },
   noteList: {
     flexGrow: 0,
-  }
+  },
+  pageIndicatorContainer: {
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border.light,
+  },
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: colors.primary,
+  },
 });

@@ -1,0 +1,595 @@
+{
+    "lessons": [
+        {
+            "id": "medeni_hukuk",
+            "questions": [
+                {
+                    "id": "01",
+                    "question": "Medeni Hukukun temel amacı nedir?",
+                    "options": [
+                        "Bireyler arasındaki ilişkileri düzenlemek.",
+                        "Devletin cezalandırma yetkisini kullanmasını sağlamak.",
+                        "Ticari faaliyetlerin denetimini sağlamak.",
+                        "Kamu hizmetlerinin düzenlenmesini sağlamak."
+                    ],
+                    "answer": 0
+                },
+                {
+                    "id": "02",
+                    "question": "Hangi hukuk dalı Medeni Hukukun bir alt dalıdır?",
+                    "options": [
+                        "Ticaret Hukuku",
+                        "Ceza Hukuku",
+                        "Anayasa Hukuku",
+                        "İdare Hukuku"
+                    ],
+                    "answer": 0
+                },
+                {
+                    "id": "03",
+                    "question": "Medeni Kanunun ilk maddesi neyi düzenler?",
+                    "options": [
+                        "Hukukun uygulanması ve kaynaklarını.",
+                        "Devletin yasama yetkisini.",
+                        "Suç ve cezaları.",
+                        "Sözleşmelerin geçerliliğini."
+                    ],
+                    "answer": 0
+                },
+                {
+                    "id": "04",
+                    "question": "Medeni Hukukta kişiler hukuku neyi düzenler?",
+                    "options": [
+                        "Kişilerin hak ehliyeti ve fiil ehliyetini.",
+                        "Ticari faaliyetleri.",
+                        "Kamu görevlilerinin yetkilerini.",
+                        "Devletin cezalandırma yetkisini."
+                    ],
+                    "answer": 0
+                },
+                {
+                    "id": "05",
+                    "question": "Aşağıdakilerden hangisi Medeni Hukukun kaynakları arasında yer alır?",
+                    "options": [
+                        "Yargıtay Kararları",
+                        "Kanunlar",
+                        "Hukuk Doktrini",
+                        "Hepsi"
+                    ],
+                    "answer": 3
+                },
+                {
+                    "id": "06",
+                    "question": "Medeni Hukuk hangi sistemden alınmıştır?",
+                    "options": [
+                        "Fransız Hukuku",
+                        "İsviçre Hukuku",
+                        "İngiliz Hukuku",
+                        "Alman Hukuku"
+                    ],
+                    "answer": 1
+                },
+                {
+                    "id": "07",
+                    "question": "Medeni Hukukta 'kişilik hakkı' neyi ifade eder?",
+                    "options": [
+                        "Kişinin mal varlığı üzerindeki hakkını.",
+                        "Kişinin ticari haklarını.",
+                        "Kişinin manevi ve maddi varlıkları üzerindeki haklarını.",
+                        "Kişinin devlet üzerindeki haklarını."
+                    ],
+                    "answer": 2
+                },
+                {
+                    "id": "08",
+                    "question": "Aşağıdakilerden hangisi Medeni Hukukun dallarından biri değildir?",
+                    "options": [
+                        "Aile Hukuku",
+                        "Kişiler Hukuku",
+                        "Borçlar Hukuku",
+                        "Ceza Hukuku"
+                    ],
+                    "answer": 3
+                },
+                {
+                    "id": "09",
+                    "question": "Hukukta 'fiil ehliyeti' neyi ifade eder?",
+                    "options": [
+                        "Kişinin sözleşme yapabilme ve haklarını kullanabilme yetisini.",
+                        "Kişinin ticaret yapabilme kapasitesini.",
+                        "Kişinin bir suç işleme kapasitesini.",
+                        "Kişinin eğitim alma hakkını."
+                    ],
+                    "answer": 0
+                },
+                {
+                    "id": "10",
+                    "question": "Medeni Hukuk hangi hukuk düzeni içinde yer alır?",
+                    "options": [
+                        "Kamu Hukuku",
+                        "Özel Hukuk",
+                        "Uluslararası Hukuk",
+                        "Ceza Hukuku"
+                    ],
+                    "answer": 1
+                }
+            ]
+        },
+        {
+            "id": "borclar_hukuku",
+            "questions": [
+              {
+                "id": "01",
+                "question": "Borçlar Hukuku nedir?",
+                "options": [
+                  "Bireyler arasındaki borç ilişkilerini düzenleyen hukuk dalıdır.",
+                  "Devlet ve bireyler arasındaki ilişkileri düzenleyen hukuk dalıdır.",
+                  "Kamu hizmetlerinin düzenlenmesini sağlayan hukuk dalıdır.",
+                  "Ticaret ve şirketler arasındaki anlaşmazlıkları düzenleyen hukuk dalıdır."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "02",
+                "question": "Sözleşme nedir?",
+                "options": [
+                  "İki veya daha fazla tarafın karşılıklı ve birbirine uygun irade beyanlarıyla borç ilişkisi kurduğu hukuki işlemdir.",
+                  "Yalnızca devletin taraf olduğu bir hukuki işlemdir.",
+                  "Bireylerin birbirine karşı yükümlülüklerinden doğan ceza hukukuna özgü bir durumdur.",
+                  "Mahkeme kararıyla oluşturulan bir borç ilişkisidir."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "03",
+                "question": "Haksız fiil nedir?",
+                "options": [
+                  "Bir kişinin hukuka aykırı olarak bir başkasına zarar vermesi durumudur.",
+                  "Bir kişinin suç işleyerek ceza alması durumudur.",
+                  "Devletin bireyler arasındaki borç ilişkilerine müdahale etmesidir.",
+                  "Sözleşmeye dayalı borç ilişkilerinin sona ermesidir."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "04",
+                "question": "Sebepsiz zenginleşme hangi durumda söz konusu olur?",
+                "options": [
+                  "Bir kişinin başkasına ait mal varlığı değerlerinden hukuka aykırı şekilde zenginleşmesi durumunda.",
+                  "Bir kişinin haksız fiil sonucu mal varlığında kayıp yaşaması durumunda.",
+                  "Devletin kişilere karşı yaptırım uygulaması durumunda.",
+                  "Bir kişinin borcunu ödemesi durumunda."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "05",
+                "question": "Borçların sona erme sebeplerinden biri değildir:",
+                "options": [
+                  "İfa (borcun ödenmesi).",
+                  "İbra (alacaklının borçluyu borçtan kurtarması).",
+                  "Zamanaşımı.",
+                  "Yeni bir borç ilişkisi kurma."
+                ],
+                "answer": 3
+              }
+            ]
+        },   
+        {
+            "id": "ceza_hukuku",
+            "questions": [
+              {
+                "id": "01",
+                "question": "Ceza Hukuku nedir?",
+                "options": [
+                  "Suçların tanımlandığı ve suçlulara uygulanan yaptırımların düzenlendiği hukuk dalıdır.",
+                  "Devletin bireylerin haklarını koruduğu hukuk dalıdır.",
+                  "Ticari faaliyetlerin denetimini sağlamak için oluşturulmuş hukuk dalıdır.",
+                  "Kamu hizmetlerinin düzenlenmesi için oluşturulmuş hukuk dalıdır."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "02",
+                "question": "Suç ve ceza arasındaki ilişki nedir?",
+                "options": [
+                  "Suç, yasalarla belirlenen bir davranışın cezalandırılmasını gerektirir.",
+                  "Ceza, sadece devletin verdiği para cezalarından oluşur.",
+                  "Suç, yalnızca fiziksel şiddetle ilişkilidir.",
+                  "Ceza, suçlulara verilen bir ödüldür."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "03",
+                "question": "Ceza hukukunun amacı nedir?",
+                "options": [
+                  "Toplumun güvenliğini sağlamak ve suçluları cezalandırmak.",
+                  "İnsan haklarını korumak ve bireysel özgürlüğü savunmak.",
+                  "Sadece ticari suçları düzenlemek.",
+                  "Toplumdaki her bireyi eşit şekilde cezalandırmak."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "04",
+                "question": "Ceza hukukunda 'kasten işlenen suç' ne demektir?",
+                "options": [
+                  "Suçlunun, suç işleme niyetiyle hareket etmesi.",
+                  "Suçlunun, suçu istemeden işlemesi.",
+                  "Suçlunun, suçu başkaları tarafından kandırılarak işlemesi.",
+                  "Suçlunun, suçu ihmal sonucu işlemesi."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "05",
+                "question": "Ceza hukukunda 'hafifletici sebepler' nedir?",
+                "options": [
+                  "Suçlunun, suç işlemekteki suçluluk oranının düşük olduğu durumlar.",
+                  "Suçlunun, suç işledikten sonra kaçması.",
+                  "Suçlunun, suç işlediği sırada bilinçli olmaması.",
+                  "Suçlunun, suçtan fayda sağlamamış olması."
+                ],
+                "answer": 0
+              }
+            ]
+        },
+        {
+            "id": "idare_hukuku",
+            "questions": [
+              {
+                "id": "01",
+                "question": "İdare Hukuku nedir?",
+                "options": [
+                  "Devletin yönetim organları ve bunların faaliyetleri ile ilgili hukuk dalıdır.",
+                  "Bireyler arasındaki borç ilişkilerini düzenleyen hukuk dalıdır.",
+                  "Kamu hizmetlerinin düzenlenmesini sağlayan hukuk dalıdır.",
+                  "Suçlulara uygulanan yaptırımların belirlenmesiyle ilgili hukuk dalıdır."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "02",
+                "question": "İdare hukuku hangi alanları kapsar?",
+                "options": [
+                  "Kamu yönetimi, kamu hizmetleri, idari yargı ve idari işlemler.",
+                  "Bireysel sözleşmeler, borç ilişkileri ve medeni haklar.",
+                  "Ceza davaları, suçlar ve cezalar.",
+                  "Kişisel özgürlükler ve hukuki sözleşmeler."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "03",
+                "question": "İdari işlemin geçerliliği için gerekli olan koşul nedir?",
+                "options": [
+                  "İdari işlemin hukuka uygun olması ve yetkili organ tarafından yapılması.",
+                  "İdari işlemin kamu yararına uygun olmaması.",
+                  "İdari işlemin yalnızca belirli bir zaman diliminde geçerli olması.",
+                  "İdari işlemin mahkeme tarafından onaylanması."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "04",
+                "question": "İdare hukukunda 'hizmet zararı' nedir?",
+                "options": [
+                  "Kamu hizmetlerinin yürütülmesi sırasında devletin, bireylere veya diğer kurumlara verdiği maddi zarar.",
+                  "Bireylerin, kamu hizmetlerinden yararlanırken yaptıkları hatalar.",
+                  "Devletin, bireylerin özel haklarını ihlal etmesi durumunda ortaya çıkan zarar.",
+                  "Devletin, yasal düzeni sağlamak amacıyla aldığı kararlar sonucu bireylere verilen zarar."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "05",
+                "question": "İdare hukukunun temel ilkelerinden biri nedir?",
+                "options": [
+                  "Kamu yararının gözetilmesi.",
+                  "Özel mülkiyetin korunması.",
+                  "Bireysel özgürlüklerin genişletilmesi.",
+                  "Ceza adaletinin sağlanması."
+                ],
+                "answer": 0
+              }
+            ]
+        },
+        {
+            "id": "anayasa_hukuku",
+            "questions": [
+              {
+                "id": "01",
+                "question": "Anayasa Hukuku nedir?",
+                "options": [
+                  "Ülkelerin anayasa yapılarının hukukî yapısını ve bunların uygulanmasını düzenleyen hukukî alandır.",
+                  "Devletin suçlulara uyguladığı cezaları düzenleyen hukuk dalıdır.",
+                  "Bireyler arasındaki borç ilişkilerini düzenleyen hukuk dalıdır.",
+                  "Kamu hizmetlerinin düzenlenmesiyle ilgili hukuk dalıdır."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "02",
+                "question": "Anayasada yer alan 'egemenlik' ilkesi neyi ifade eder?",
+                "options": [
+                  "Egemenlik, halkın, devletin yönetiminde söz sahibi olma hakkıdır.",
+                  "Egemenlik, sadece devletin hükümetine ait olan bir haktır.",
+                  "Egemenlik, devletin dış dünyada kendini savunma hakkıdır.",
+                  "Egemenlik, yalnızca yerel yönetimlerin bağımsız hareket etme hakkıdır."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "03",
+                "question": "Anayasada yer alan 'hukukun üstünlüğü' ilkesi nedir?",
+                "options": [
+                  "Devletin tüm faaliyetlerinin hukuka uygun olmasını sağlayan ilkedir.",
+                  "Bireylerin sadece belirli hukuk alanlarında haklarını kullanabileceği ilkedir.",
+                  "Devletin tüm iç ve dış ilişkilerinde üstünlük sağlaması gereken ilkedir.",
+                  "Hukukun, sadece kamu yönetimi için geçerli olacağı ilkedir."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "04",
+                "question": "Anayasada yer alan 'bireysel haklar' neyi kapsar?",
+                "options": [
+                  "Bireylerin devlet karşısında sahip olduğu hak ve özgürlükleri kapsar.",
+                  "Bireylerin yalnızca devletin belirlediği alanlarda hak talep edebilmesi.",
+                  "Bireylerin, devlet tarafından verilen belirli görevleri yerine getirmesi.",
+                  "Bireylerin, yalnızca sosyal sorumluluklarını yerine getirmesi."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "05",
+                "question": "Anayasada yer alan 'yargı bağımsızlığı' ilkesi neyi ifade eder?",
+                "options": [
+                  "Yargının, hükümetten ve diğer devlet organlarından bağımsız olması gerektiğini ifade eder.",
+                  "Yargı organlarının yalnızca yasama organından bağımsız olmasını ifade eder.",
+                  "Yargı organlarının yürütme organı tarafından kontrol edilmesini ifade eder.",
+                  "Yargı organlarının yalnızca devlet başkanından bağımsız olmasını ifade eder."
+                ],
+                "answer": 0
+              }
+            ]
+        },
+        {
+            "id": "ticaret_hukuku",
+            "questions": [
+              {
+                "id": "01",
+                "question": "Ticaret Hukuku nedir?",
+                "options": [
+                  "Ticaret hayatının düzenlenmesi, ticari işletmelerin ve ticaretin denetimi ile ilgili hukuk dalıdır.",
+                  "Bireylerin medeni ilişkilerinin düzenlendiği hukuk dalıdır.",
+                  "Devletin suçlulara uyguladığı cezaların düzenlendiği hukuk dalıdır.",
+                  "Kamu hizmetlerinin düzenlenmesi ile ilgili hukuk dalıdır."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "02",
+                "question": "Ticaret hukukunun kapsamına hangi alanlar girer?",
+                "options": [
+                  "Ticaret sözleşmeleri, ticaret şirketleri, marka ve patent hakları.",
+                  "Bireylerin medeni hakları, boşanma ve miras işlemleri.",
+                  "Devletin dış ilişkileri, diplomatik anlaşmalar.",
+                  "Bireylerin sosyal güvenlik hakları, işsizlik sigortası."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "03",
+                "question": "Ticaret sicili nedir?",
+                "options": [
+                  "Ticaret yapan kişilerin ve ticaret şirketlerinin kayıtlarının tutulduğu resmi kayıttır.",
+                  "Devletin yaptığı tüm resmi işlemlerin kaydedildiği kayıttır.",
+                  "İşletmelerin çalışanlarının kayıtlarının tutulduğu kayıttır.",
+                  "Bireylerin adli sicil kayıtlarının tutulduğu kayıttır."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "04",
+                "question": "Ticaret şirketleri hangi şekilde sınıflandırılır?",
+                "options": [
+                  "Limited şirketler, anonim şirketler, kolektif şirketler ve komandit şirketler.",
+                  "Hissedar şirketler, şahıs şirketleri, devlet şirketleri.",
+                  "Açık şirketler, kapalı şirketler, yarı kamusal şirketler.",
+                  "Karma şirketler, halka açık şirketler, aile şirketleri."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "05",
+                "question": "Ticaret hukuku açısından 'haksız rekabet' nedir?",
+                "options": [
+                  "Rakiplerin ticari faaliyetleri sırasında dürüst olmayan yöntemlerle rekabet etmeleridir.",
+                  "Bir işletmenin ürün fiyatlarını haksız yere yüksek tutmasıdır.",
+                  "İşletmelerin iç mali raporlarını yanlışlıkla paylaşmasıdır.",
+                  "Devletin belirlediği ticaret sınırlarını aşan faaliyetlerdir."
+                ],
+                "answer": 0
+              }
+            ]
+        },
+        {
+            "id": "is_hukuku",
+              "questions": [
+                {
+                  "id": 1,
+                  "question": "Madde 18'e göre işçinin iş sözleşmesini feshedebilmek için hangi koşulun sağlanması gerekir?",
+                  "options": [
+                    "İşçinin en az bir yıl çalışmış olması",
+                    "İşverenin işçiyi sendika üyesi yapması",
+                    "İşçinin yeterliliği, davranışları veya işin gereklerinden kaynaklanan geçerli bir sebep bulunması",
+                    "İşçinin yer altı işlerinde çalışıyor olması"
+                  ],
+                  "answer": 2
+                },
+                {
+                  "id": 2,
+                  "question": "Madde 18'de yer alan kıdem şartı hangi durumda aranmaz?",
+                  "options": [
+                    "İşçinin bir yıldan fazla çalışması durumunda",
+                    "Yer altı işlerinde çalışan işçiler için",
+                    "Kadın işçilerin hamilelik izninde olması durumunda",
+                    "İşverenin fesih nedeni göstermemesi durumunda"
+                  ],
+                  "answer": 1
+                },
+                {
+                  "id": 3,
+                  "question": "Aşağıdakilerden hangisi, fesih için geçerli bir sebep oluşturmaz?",
+                  "options": [
+                    "İşçinin yetersiz performans göstermesi",
+                    "İşveren aleyhine adli makamlara başvurmak",
+                    "İşyerinin ekonomik nedenlerle küçülmeye gitmesi",
+                    "İşçinin davranışlarının işletmeyi olumsuz etkilemesi"
+                  ],
+                  "answer": 1
+                },
+                {
+                  "id": 4,
+                  "question": "Bir işyerinde çalışan işçi sayısı nasıl belirlenir?",
+                  "options": [
+                    "Sadece fesih yapılacak işyerindeki işçi sayısı dikkate alınır",
+                    "Aynı işverenin aynı işkolundaki tüm işyerlerinde çalışan işçilerin toplam sayısı dikkate alınır",
+                    "Çalışan işçi sayısı kıdeme göre hesaplanır",
+                    "İşverenin tüm işletmelerinde çalışan toplam işçi sayısı dikkate alınır"
+                  ],
+                  "answer": 1
+                },
+                {
+                  "id": 5,
+                  "question": "Aşağıdaki durumlardan hangisi fesih için geçerli bir sebep olarak değerlendirilebilir?",
+                  "options": [
+                    "İşçinin sendika temsilciliği yapması",
+                    "İşyerinin ekonomik nedenlerle küçülmeye gitmesi",
+                    "İşçinin ırkı veya cinsiyeti",
+                    "İşçinin doğum yapması"
+                  ],
+                  "answer": 1
+                },
+                {
+                  "id": 6,
+                  "question": "Madde 18'e göre kıdem süresi hesaplanırken hangi kanun maddesi dikkate alınır?",
+                  "options": [
+                    "74. madde",
+                    "66. madde",
+                    "25. madde",
+                    "21. madde"
+                  ],
+                  "answer": 1
+                },
+                {
+                  "id": 7,
+                  "question": "Aşağıdakilerden hangisi işçinin fesih sırasında korunmasını sağlayan durumlardan biridir?",
+                  "options": [
+                    "İşçinin hastalık nedeniyle işe devamsızlık yapması",
+                    "İşçinin ırk, cinsiyet veya siyasi görüş nedeniyle ayrımcılığa uğraması",
+                    "İşçinin mevzuattan doğan haklarını kullanması",
+                    "Tüm seçenekler"
+                  ],
+                  "answer": 3
+                },
+                {
+                  "id": 8,
+                  "question": "Madde 18 kapsamında, işveren vekilleri için aşağıdaki maddelerden hangisi uygulanmaz?",
+                  "options": [
+                    "Madde 18",
+                    "Madde 25'in son fıkrası",
+                    "Madde 19 ve 21",
+                    "Tüm seçenekler"
+                  ],
+                  "answer": 3
+                },
+                {
+                  "id": 9,
+                  "question": "Madde 18'e göre işçinin hangi davranışı fesih için geçerli bir sebep sayılmaz?",
+                  "options": [
+                    "İşçinin işyerine sık sık geç gelmesi",
+                    "İşçinin 25. madde kapsamında bekleme süresinde işe devamsızlık yapması",
+                    "İşçinin sendikal faaliyetlere katılması",
+                    "İşçinin işverenin talimatlarını yerine getirmemesi"
+                  ],
+                  "answer": 2
+                },
+                {
+                  "id": 10,
+                  "question": "Madde 18'e göre altı aylık kıdem süresi nasıl hesaplanır?",
+                  "options": [
+                    "İşçinin çalıştığı ilk işyerindeki süre dikkate alınır",
+                    "Aynı işverenin farklı işyerlerindeki süreler birleştirilerek hesaplanır",
+                    "İşverenin toplam kıdemi dikkate alınmaz",
+                    "İşçinin altı aylık süresi yalnızca yer altı işlerinde geçerli olur"
+                  ],
+                  "answer": 1
+                }
+              ]
+        },
+        {
+            "id": "hukuk_tarihi",
+            "questions": [
+              {
+                "id": "01",
+                "question": "Hukuk Tarihi nedir?",
+                "options": [
+                  "Geçmişteki hukuk sistemlerinin ve hukuk normlarının incelenmesiyle ilgili bir bilim dalıdır.",
+                  "Bireylerin medeni haklarının düzenlendiği bir hukuk dalıdır.",
+                  "Devletin suçlulara uyguladığı cezaların düzenlendiği bilim dalıdır.",
+                  "Toplumların kültürel miraslarının korunması ile ilgili bir alandır."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "02",
+                "question": "Hukuk tarihinde hangi dönemde Roma Hukuku önemli bir yer tutmuştur?",
+                "options": [
+                  "Roma İmparatorluğu döneminde.",
+                  "Orta Çağ'da.",
+                  "Feodal dönemde.",
+                  "Yeni Çağ'da."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "03",
+                "question": "Osmanlı Hukukunun temel kaynağı nedir?",
+                "options": [
+                  "Şeriat ve kanunlar.",
+                  "Roma hukukunun ilkeleri.",
+                  "Batı hukukunun etkileri.",
+                  "Felsefi düşünceler ve dinî metinler."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "04",
+                "question": "Modern hukuk sistemlerinin temelleri hangi dönemde atılmıştır?",
+                "options": [
+                  "Aydınlanma dönemi ve Fransız İhtilali.",
+                  "Orta Çağ'da.",
+                  "Rönesans dönemi.",
+                  "İslam medeniyetinin erken dönemlerinde."
+                ],
+                "answer": 0
+              },
+              {
+                "id": "05",
+                "question": "Medeni Hukuk alanında, modern anlamda 'sözleşme' anlayışının temeli hangi dönemde ortaya çıkmıştır?",
+                "options": [
+                  "Roma Hukuku'nda.",
+                  "Osmanlı İmparatorluğu döneminde.",
+                  "Orta Çağ'da.",
+                  "Aydınlanma dönemi."
+                ],
+                "answer": 0
+              }
+            ]
+        }
+          
+    ]
+}
