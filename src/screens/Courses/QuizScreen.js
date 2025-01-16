@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Vibration } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { 
   FadeIn, 
 } from 'react-native-reanimated';
@@ -108,7 +107,7 @@ export default function QuizScreen({ route }) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
           <Animated.View 
@@ -167,7 +166,7 @@ export default function QuizScreen({ route }) {
           />
         </Pressable>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

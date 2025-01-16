@@ -66,7 +66,7 @@ const CategoryItem = React.memo(
     }
     return (
       <Pressable onPress={() => onSelect(item.id)}>
-        <Animated.View
+        <View
           style={[
             styles.categoryItem,
             isSelected && styles.categoryItemSelected,
@@ -80,7 +80,7 @@ const CategoryItem = React.memo(
           >
             {item.title}
           </Text>
-        </Animated.View>
+        </View>
       </Pressable>
     );
   },
@@ -165,8 +165,6 @@ export default function CoursesScreen() {
   const navigation = useNavigation();
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [filteredCourses, setFilteredCourses] = useState(courses.courses);
-
-
 
   const handleCategorySelect = useCallback((categoryId) => {
     setSelectedCategory(categoryId);

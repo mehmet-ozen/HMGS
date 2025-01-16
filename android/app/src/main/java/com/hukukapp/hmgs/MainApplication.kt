@@ -1,4 +1,4 @@
-package com.anonymous.HMGS
+package com.hukukapp.hmgs
 
 import android.app.Application
 import android.content.res.Configuration

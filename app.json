@@ -13,20 +13,24 @@
       "backgroundColor": "#3787EA"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.hukukapp.hmgs"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#3787EA"
       },
-      "package": "com.anonymous.HMGS"
+      "googleServicesFile": "./google-services.json",
+      "package": "com.hukukapp.hmgs"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth"
     ],
     "extra": {
       "eas": {

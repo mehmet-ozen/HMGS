@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Pressable, Image as NativeImage } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Dimensions, Pressable, Image as NativeImage, Button } from 'react-native';
 import Animated, {
     useAnimatedStyle,
     withTiming,
@@ -23,6 +22,10 @@ import {
 } from "@shopify/react-native-skia";
 import { colors } from '../../theme/colors';
 import { useNavigation } from '@react-navigation/native';
+import firestore from '@react-native-firebase/firestore';
+import { Alert } from 'react-native';
+
+import lessons from '../../data/competitionQuestion.json'
 
 const { width, height } = Dimensions.get('window');
 const WHEEL_SIZE = width * 0.95;
@@ -248,6 +251,40 @@ const Wheel = ({ onSpinEnd }) => {
         </View>
     );
 };
+const saveLessonsData = async () => {
+  try {
+    const batch = firestore().batch();
+    lessons.lessons.forEach((lessonData) => {
+        console.log(lessonData); // lessonData'yı konsola yazdırarak kontrol edin.
+    
+        const docName = lessonData.id; // Dersi belirle
+        // Veriyi Firestore formatına dönüştür
+        if (lessonData.questions && Array.isArray(lessonData.questions)) {
+            const formattedData = {
+                questions: lessonData.questions.map(question => ({
+                    question: question.question,
+                    options: question.options,
+                    correctAnswer: question.answer,
+                }))
+            };
+            console.log(formattedData); // formattedData'yı kontrol edin
+    
+            const lessonRef = firestore().collection('competition_questions').doc(docName);
+            batch.set(lessonRef, formattedData);
+        }
+    });
+
+    // Batch işlemini çalıştır
+    await batch.commit();
+    console.log('Tüm dersler başarıyla kaydedildi!');
+    Alert.alert('Başarılı', 'Tüm dersler veritabanına kaydedildi.');
+    
+  } catch (error) {
+    console.error('Hata detayı:', error);
+    Alert.alert('Hata', 'Dersler kaydedilirken bir hata oluştu: ' + error.message);
+  }
+};
+
 
 export default function WheelScreen() {
     const navigation = useNavigation();
@@ -260,13 +297,14 @@ export default function WheelScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Konu Çarkı</Text>
                 <Text style={styles.subtitle}>Çarkı çevirerek rastgele bir konudan quiz çöz!</Text>
             </View>
             <Wheel onSpinEnd={handleSpinEnd} />
-        </SafeAreaView>
+            <Button title='Sorulari Kaydet' onPress={saveLessonsData}/>
+        </View>
     );
 }
 

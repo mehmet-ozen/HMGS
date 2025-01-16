@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, Vibration } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Animated, { FadeIn, SlideInRight } from 'react-native-reanimated';
 import { Pressable } from 'react-native-gesture-handler';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { colors } from '../../theme/colors';
-const { width } = Dimensions.get('window');
-import lessons from '../../data/competitionQuestion.json';
+import firestore from '@react-native-firebase/firestore';
 
+const { width } = Dimensions.get('window');
 
 const CompetitorCard = ({ competitor, isUser }) => (
   <View style={[styles.competitorCard, isUser && styles.userCard]}>
@@ -83,35 +80,62 @@ export default function QuizCompetitionScreen({ route }) {
   const { selectedItemID } = route.params;
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
-  const [question, setQuestion] = useState({id: '', question: '', options: [], answer: ''});
+  const [question, setQuestion] = useState({ id: '', question: '', options: [], answer: '' });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      if(selectedItemID){
-        const lesson = lessons.lessons.find(lesson => lesson.id === selectedItemID);
-        console.log(lesson);
-        if(lesson){
-          const randomQuestion = lesson.questions[Math.floor(Math.random() * lesson.questions.length)];
-          setQuestion(randomQuestion);
+    const fetchRandomQuestion = async () => {
+      try {
+        setLoading(true);
+        console.log(selectedItemID)
+        // Seçilen dersin tüm sorularını getir
+        const docRef = firestore().collection('competition_questions').doc(selectedItemID);
+        const docSnapshot = await docRef.get();
+
+        if (docSnapshot.exists) {
+          const docData = docSnapshot.data();
+          if (docData && docData.questions && docData.questions.length > 0) {
+            // questions array'ini kontrol ediyoruz
+            const randomIndex = Math.floor(Math.random() * docData.questions.length);
+            const randomQuestion = docData.questions[randomIndex];
+  
+            setQuestion({
+              id: randomQuestion.id,
+              question: randomQuestion.question,
+              options: randomQuestion.options,
+              answer: randomQuestion.correctAnswer,
+            });
+          } else {
+            console.log('Sorular bulunamadı veya array boş.');
+          }
         }
+      } catch (error) {
+        console.error('Soru yüklenirken hata:', error);
+      } finally {
+        setLoading(false);
       }
-        
+    };
+
+    if (selectedItemID) {
+      fetchRandomQuestion();
+    }
   }, [selectedItemID]);
 
   const handleOptionSelect = (index) => {
     if (!showResult) {
       setSelectedOption(index);
-      // Burada rakibe göndermek için socket işlemleri yapılabilir
+      handleCheckAnswer();
     }
-    handleCheckAnswer();
   };
+
   const handleCheckAnswer = () => {
     setShowResult(true);
-    if (selectedOption === question.answer) {
-      // setScore(prev => prev + 1);
-    }else{
+    if (selectedOption !== question.answer) {
       Vibration.vibrate(100);
     }
   };
+
+
   return (
     <View style={styles.container}>
       <View style={styles.competitorsContainer}>
@@ -121,7 +145,6 @@ export default function QuizCompetitionScreen({ route }) {
         </View>
         <CompetitorCard competitor={competitors.opponent} isUser={false} />
       </View>
-
 
       <View style={styles.questionContainer}>
         <Text style={styles.questionText}>
@@ -142,30 +165,6 @@ export default function QuizCompetitionScreen({ route }) {
           />
         ))}
       </View>
-
-      {/* <View 
-        style={styles.bottomContainer}
-      >
-        <Pressable
-          style={({ pressed }) => [
-            styles.actionButton,
-            !showResult && selectedOption === null && styles.buttonDisabled,
-            pressed && styles.buttonPressed,
-            showResult && styles.nextButton,
-          ]}
-          onPress={handleCheckAnswer}
-          disabled={!showResult && selectedOption === null}
-        >
-          <Text style={styles.buttonText}>
-            {showResult ? "Sonraki Soru" : "Kontrol Et"}
-          </Text>
-          <Ionicons 
-            name={showResult ? "arrow-forward" : "checkmark"} 
-            size={24} 
-            color={colors.text.white} 
-          />
-        </Pressable>}
-      </View> */}
     </View>
   );
 }
@@ -415,6 +414,15 @@ const styles = StyleSheet.create({
   buttonText: {
     color: colors.text.white,
     fontSize: 16,
+    fontWeight: '600',
+  },
+  loadingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: colors.text.primary,
     fontWeight: '600',
   },
 });

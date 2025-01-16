@@ -7,7 +7,7 @@ import Animated, {
   interpolate,
   useSharedValue,
 } from 'react-native-reanimated';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { colors } from '../../theme/colors';
 import { Pressable } from 'react-native-gesture-handler';
 
@@ -41,11 +41,7 @@ const AccordionItem = ({ course, navigation }) => {
     isExpanded.value = !isExpanded.value;
   };
 
-  useEffect(() => {
-    navigation.setOptions({
-      title: course.title,
-    });
-  }, [course.title]);
+
 
   return (
     <Animated.View style={styles.accordionContainer}>
@@ -138,6 +134,11 @@ export default function CoursesDetailScreen({ route }) {
   const navigation = useNavigation();
   const { course } = route.params;
 
+  useEffect(() => {
+    navigation.setOptions({
+      title: course.title,
+    });
+  }, []);
   return (
     <View style={styles.container}>
       <Animated.FlatList
@@ -152,7 +153,7 @@ export default function CoursesDetailScreen({ route }) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
       />
-    </View>
+  </View>
   );
 }
 

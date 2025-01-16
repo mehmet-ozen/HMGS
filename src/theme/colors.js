@@ -50,6 +50,6 @@ export const colors = {
         dark: '#BDBDBD',     // Koyu kenarlık
     },
 
-    tertiary: '#4A90E2',  // Ayarlar butonu için
+    tertiary: '#FCBA03',  // Ayarlar butonu için
     quaternary: '#9B59B6', // Profil butonu için
 }; 

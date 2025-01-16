@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "199923194997",
+    "project_id": "hukuk-ve-hmgs",
+    "storage_bucket": "hukuk-ve-hmgs.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:199923194997:android:2a1a6df596690591f9ec3c",
+        "android_client_info": {
+          "package_name": "com.hukukapp.hmgs"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkzDAzIwR-mXmZHaYlMiAwivrox2VXRy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

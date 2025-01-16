@@ -25,6 +25,8 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.anonymous.HMGS"/>
+        <data android:scheme="com.hukukapp.hmgs"/>
+        <data android:scheme="exp+hukukandhmgs"/>
       </intent-filter>
     </activity>
   </application>

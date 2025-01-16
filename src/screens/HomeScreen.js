@@ -2,10 +2,12 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'rea
 import { colors } from '../theme/colors';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown, useSharedValue } from 'react-native-reanimated';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import BottomSheet from '../components/BottomSheet';
+import { useAuth } from '../context/AuthContext';
+import images from '../data/images';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
 
 const { width } = Dimensions.get('window');
 
@@ -22,9 +24,9 @@ const DailyQuestionCard = () => (
       <Text style={styles.questionText} numberOfLines={2}>
         Borçlar hukukunda sebepsiz zenginleşmenin şartları nelerdir?
       </Text>
-      <Ionicons 
-        name="expand-outline" 
-        size={20} 
+      <Ionicons
+        name="expand-outline"
+        size={20}
         color={colors.primary}
         style={styles.expandIcon}
       />
@@ -48,34 +50,37 @@ const HomeButton = ({ onPress, title, icon, color, style }) => (
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-  const userName = "Mehmet"; // Kullanıcı adını buradan değiştirebilirsiniz
-  const isOpen = useSharedValue(0);
-  const toggleSheet = () => {
-    isOpen.value = !isOpen.value;
-  }
+  const { user } = useAuth();
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor={colors.primary} style="auto"/>
+    <View style={[styles.container, {
+      paddingTop: insets.top,
+      paddingBottom: insets.bottom,
+      paddingLeft: insets.left,
+      paddingRight: insets.right,
+    }]}>
+      <StatusBar backgroundColor={colors.primary} style="auto" />
       <View style={styles.container}>
         <View style={styles.topSection}>
-        <View style={styles.topBackground}/>
+          <View style={styles.topBackground} />
           <Image
-            source={require('../../assets/images/pp_8.png')}
+            source={images.avatars[user.profilePhotoIndex]}
             style={styles.circleImage}
           />
-        <Animated.View 
-            entering={FadeInDown.delay(400)} 
+          <Animated.View
+            entering={FadeInDown.delay(400)}
             style={styles.welcomeContainer}
-        >
-          <Text 
-            style={styles.nameText}
           >
-            {userName}
-          </Text>
-          <Text style={styles.sloganText}>Adalet ve Başarı Yolunda</Text>
-        </Animated.View>
+            <Text
+              style={styles.nameText}
+            >
+              {user.fullName}
+            </Text>
+            <Text style={styles.sloganText}>Adalet ve Başarı Yolunda</Text>
+          </Animated.View>
 
-        <DailyQuestionCard />
+          <DailyQuestionCard />
         </View>
 
         {/* <View style={styles.statsContainer}>
@@ -120,40 +125,27 @@ export default function HomeScreen() {
           />
 
           <HomeButton
-            title="SORU YARIŞMASI"
-            icon="trophy-outline"
+            title="HUKUK ÇARKI"
+            icon="flower-outline"
             color={colors.secondary}
             onPress={() => navigation.navigate('WheelScreen')}
           />
-            <HomeButton
-              title="AYARLAR"
-              icon="settings-outline"
-              color={colors.quaternary}
-              onPress={() => navigation.navigate('Settings')}
-            />
-          {/* <View style={styles.smallButtonsRow}>
-            <HomeButton
-              title="AYARLAR"
-              icon="settings-outline"
-              color={colors.quaternary}
-              style={styles.smallButton}
-              onPress={() => navigation.navigate('Settings')}
-            />
-            
-            <HomeButton
-              title="PROFİL"
-              icon="person-outline"
-              color={colors.quaternary}
-              style={styles.smallButton}
-              onPress={() => navigation.navigate('Profile')}
-            />
-          </View> */}
+          <HomeButton
+            title="LİDERLİK TABLOSU"
+            icon="trophy-outline"
+            color={colors.tertiary}
+            onPress={() => navigation.navigate('LeaderBoard')}
+          />
+          <HomeButton
+            title="AYARLAR"
+            icon="settings-outline"
+            color={colors.quaternary}
+            onPress={() => navigation.navigate('Settings')}
+          />
+
         </View>
-        {/* <BottomSheet isOpen={isOpen} toggleSheet={toggleSheet} duration={500}>
-          <Text>asd</Text>
-        </BottomSheet> */}
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -181,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: 'bold',
     color: colors.text.white,
-    textAlign:'center'
+    textAlign: 'center'
   },
   topSection: {
     alignItems: 'center',
