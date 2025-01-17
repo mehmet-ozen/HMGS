@@ -235,13 +235,14 @@ export default function NotesScreen({ route }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={colors.primary} />
+      <StatusBar backgroundColor={'black'} style="auto" />
+
       <View style={styles.pageIndicatorContainer}>
         <PageIndicator
           current={currentPage}
           count={notes.length}
           color={colors.primary}
-          size={10}
+          size={8}
           variant='beads'
         />
       </View>
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 20,
+    paddingVertical: 16,
     backgroundColor: colors.background.secondary,
     borderTopWidth: 1,
     borderTopColor: colors.border.light,
@@ -434,7 +435,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 12,
-    backgroundColor: colors.background.secondary,
+    backgroundColor: `${colors.primary}15`,
     minWidth: 120,
   },
   navButtonContent: {

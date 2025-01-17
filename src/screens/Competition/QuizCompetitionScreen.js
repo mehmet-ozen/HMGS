@@ -1,25 +1,127 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, Image, Vibration } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors } from '../../theme/colors';
 import firestore from '@react-native-firebase/firestore';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const CompetitorCard = ({ competitor, isUser }) => (
-  <View style={[styles.competitorCard, isUser && styles.userCard]}>
-    <View style={styles.competitorInfo}>
-      <Image
-        source={isUser ? require('../../../assets/images/pp_8.png') : require('../../../assets/images/pp_3.png')}
-        style={styles.avatarImage}
-      />
-      <View>
-        <Text style={styles.competitorName}>{competitor.name}</Text>
-        <Text style={styles.competitorScore}>{competitor.score} Puan</Text>
+const CompetitorCard = ({ competitor, isUser, scoreChange }) => {
+  const scale = useSharedValue(1);
+  const rotate = useSharedValue('0deg');
+  const scoreScale = useSharedValue(1);
+  const scoreColor = useSharedValue(colors.text.primary);
+  const pointChangeOpacity = useSharedValue(0);
+  const pointChangeTranslateY = useSharedValue(0);
+
+  useEffect(() => {
+    if (scoreChange) {
+      if (scoreChange < 0) {
+        // Hasar animasyonu
+        scale.value = withSequence(
+          withTiming(0.95, { duration: 100 }),
+          withSpring(1)
+        );
+        rotate.value = withSequence(
+          withTiming('-2deg', { duration: 50 }),
+          withTiming('2deg', { duration: 100 }),
+          withTiming('0deg', { duration: 50 })
+        );
+        scoreScale.value = withSequence(
+          withTiming(1.2, { duration: 100 }),
+          withTiming(0.8, { duration: 100 }),
+          withSpring(1)
+        );
+        scoreColor.value = withTiming(colors.error);
+      } else {
+        // Puan artış animasyonu
+        scale.value = withSequence(
+          withTiming(1.05, { duration: 100 }),
+          withSpring(1)
+        );
+        scoreScale.value = withSequence(
+          withTiming(1.3, { duration: 200 }),
+          withSpring(1)
+        );
+        scoreColor.value = withTiming(colors.success);
+      }
+
+      // Puan değişim animasyonu
+      pointChangeOpacity.value = withSequence(
+        withTiming(1, { duration: 200 }),
+        withTiming(1, { duration: 800 }),
+        withTiming(0, { duration: 200 })
+      );
+      pointChangeTranslateY.value = withSequence(
+        withTiming(0, { duration: 200 }),
+        withTiming(-20, { duration: 800 }),
+        withTiming(-40, { duration: 200 })
+      );
+
+      // Rengi normale döndür
+      setTimeout(() => {
+        scoreColor.value = withTiming(colors.text.primary);
+      }, 500);
+    }
+  }, [scoreChange]);
+
+  const cardStyle = useAnimatedStyle(() => ({
+    transform: [
+      { scale: scale.value },
+      { rotate: rotate.value }
+    ]
+  }));
+
+  const scoreStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scoreScale.value }],
+    color: scoreColor.value
+  }));
+
+  const pointChangeStyle = useAnimatedStyle(() => ({
+    opacity: pointChangeOpacity.value,
+    transform: [{ translateY: pointChangeTranslateY.value }],
+  }));
+
+  return (
+    <Animated.View style={[styles.competitorCard, isUser && styles.userCard, cardStyle]}>
+      {/* <Text style={styles.competitorName}>{competitor.name}</Text> */}
+      <View style={styles.competitorInfo}>
+        <Image
+          source={isUser ? require('../../../assets/images/pp_8.png') : require('../../../assets/images/pp_3.png')}
+          style={styles.avatarImage}
+        />
+        <View style={styles.scoreContainer}>
+          <Ionicons name="star" size={20} color="#FFD700" />
+          <Animated.Text style={[styles.competitorScore, scoreStyle]}>
+            {competitor.score}
+          </Animated.Text>
+          {scoreChange !== 0 && (
+            <Animated.View style={[styles.pointChangeContainer, pointChangeStyle]}>
+              <Text style={[
+                styles.pointChangeText,
+                scoreChange > 0 ? styles.positiveChange : styles.negativeChange
+              ]}>
+                {scoreChange > 0 ? `+${scoreChange}` : scoreChange}
+              </Text>
+            </Animated.View>
+          )}
+        </View>
       </View>
-    </View>
-  </View>
-);
+
+    </Animated.View>
+  );
+};
 
 const OptionButton = ({ option, index, selected, correct, showResult, onSelect }) => {
   const isWrong = showResult && selected === index && index !== correct;
@@ -46,7 +148,7 @@ const OptionButton = ({ option, index, selected, correct, showResult, onSelect }
         ]}>
           <Text style={[
             styles.optionIndexText,
-            (selected === index || showCorrectAnswer || isWrong) && 
+            (selected === index || showCorrectAnswer || isWrong) &&
             styles.optionIndexTextSelected
           ]}>
             {String.fromCharCode(65 + index)}
@@ -54,7 +156,7 @@ const OptionButton = ({ option, index, selected, correct, showResult, onSelect }
         </View>
         <Text style={[
           styles.optionText,
-          (selected === index || showCorrectAnswer || isWrong) && 
+          (selected === index || showCorrectAnswer || isWrong) &&
           styles.optionTextSelected
         ]}>
           {option}
@@ -77,17 +179,18 @@ const competitors = {
 };
 
 export default function QuizCompetitionScreen({ route }) {
-  const { selectedItemID } = route.params;
+  const { selectedItemID, selectedColor } = route.params;
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [question, setQuestion] = useState({ id: '', question: '', options: [], answer: '' });
   const [loading, setLoading] = useState(true);
+  const [scoreChange, setScoreChange] = useState(0);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     const fetchRandomQuestion = async () => {
       try {
         setLoading(true);
-        console.log(selectedItemID)
         // Seçilen dersin tüm sorularını getir
         const docRef = firestore().collection('competition_questions').doc(selectedItemID);
         const docSnapshot = await docRef.get();
@@ -98,7 +201,7 @@ export default function QuizCompetitionScreen({ route }) {
             // questions array'ini kontrol ediyoruz
             const randomIndex = Math.floor(Math.random() * docData.questions.length);
             const randomQuestion = docData.questions[randomIndex];
-  
+
             setQuestion({
               id: randomQuestion.id,
               question: randomQuestion.question,
@@ -124,26 +227,48 @@ export default function QuizCompetitionScreen({ route }) {
   const handleOptionSelect = (index) => {
     if (!showResult) {
       setSelectedOption(index);
-      handleCheckAnswer();
+      const isCorrect = index === question.answer;
+
+      // Skor değişimini ayarla
+      const change = isCorrect ? 20 : -10;
+      setScoreChange(change);
+
+      // competitors state'ini güncelle
+      competitors.user.score += change;
+
+      if (!isCorrect) {
+        Vibration.vibrate(100);
+      }
+
+      setShowResult(true);
     }
   };
-
-  const handleCheckAnswer = () => {
-    setShowResult(true);
-    if (selectedOption !== question.answer) {
-      Vibration.vibrate(100);
-    }
-  };
-
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {
+      paddingTop: insets.top + 20,
+      paddingBottom: insets.bottom + 20,
+      paddingLeft: insets.left + 10,
+      paddingRight: insets.right + 10,
+    }]}>
+      <LinearGradient
+        // Background Linear Gradient
+        colors={[selectedColor, selectedColor, 'transparent']}
+        style={styles.background}
+      />
       <View style={styles.competitorsContainer}>
-        <CompetitorCard competitor={competitors.user} isUser={true} />
+        <CompetitorCard
+          competitor={competitors.user}
+          isUser={true}
+          scoreChange={scoreChange}
+        />
         <View style={styles.vsContainer}>
           <Text style={styles.vsText}>VS</Text>
         </View>
-        <CompetitorCard competitor={competitors.opponent} isUser={false} />
+        <CompetitorCard
+          competitor={competitors.opponent}
+          isUser={false}
+        />
       </View>
 
       <View style={styles.questionContainer}>
@@ -172,10 +297,16 @@ export default function QuizCompetitionScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.dark,
+    backgroundColor: 'white',
     padding: 16,
   },
-
+  background: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: height,
+  },
   competitorsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -187,41 +318,51 @@ const styles = StyleSheet.create({
   },
   competitorCard: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.primaryLight,
-    padding: 12,
+    backgroundColor: colors.background.card,
+    padding: 16,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.primary,
+    position: 'relative',
+    overflow: 'visible', // Puan değişimi animasyonu için
   },
   userCard: {
-    backgroundColor: colors.primaryLight,
-    borderColor: colors.primary,
+    backgroundColor: colors.background.card,
   },
   competitorInfo: {
-    flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
   avatarImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: colors.background.card,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     borderWidth: 2,
-    borderColor: colors.background.primary,
+    borderColor: colors.border.light,
   },
   competitorName: {
     fontSize: 16,
     fontWeight: '600',
     color: colors.text.primary,
+    marginBottom: 8,
+  },
+  scoreContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'center',
+    gap: 6,
+    backgroundColor: '`${colors.primary}20`',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: `${colors.primary}30`,
   },
   competitorScore: {
-    fontSize: 13,
-    color: colors.primary,
-    fontWeight: '500',
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.text.primary,
   },
   vsContainer: {
     width: 40,
@@ -229,7 +370,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
+    backgroundColor: colors.secondary,
     borderRadius: 20,
     borderWidth: 2,
     borderColor: colors.text.white,
@@ -295,8 +436,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 16,
     marginBottom: 24,
-    borderWidth: 2,
-    borderColor: colors.border.dark,
     justifyContent: 'center',
   },
   questionNumber: {
@@ -318,8 +457,6 @@ const styles = StyleSheet.create({
   optionButton: {
     backgroundColor: colors.background.card,
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.border.light,
     overflow: 'hidden',
   },
   optionContent: {
@@ -337,25 +474,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   optionIndexSelected: {
-    backgroundColor: colors.primary,
+    backgroundColor: `${colors.background.primary}50`,
   },
   optionIndexCorrect: {
-    backgroundColor: colors.status.success,
+    backgroundColor: `${colors.background.primary}50`,
   },
   optionIndexWrong: {
-    backgroundColor: colors.status.error,
+    backgroundColor: `${colors.background.primary}50`,
   },
   optionSelected: {
-    borderColor: colors.primary,
-    backgroundColor: `${colors.primary}10`,
   },
   optionCorrect: {
-    borderColor: colors.status.success,
-    backgroundColor: `${colors.status.success}80`,
+    backgroundColor: colors.status.success,
   },
   optionWrong: {
-    borderColor: colors.status.error,
-    backgroundColor: `${colors.status.error}80`,
+    backgroundColor: colors.status.error,
   },
   optionPressed: {
     transform: [{ scale: 0.98 }],
@@ -424,5 +557,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: colors.text.primary,
     fontWeight: '600',
+  },
+  scoreContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:"center",
+    gap: 4,
+    backgroundColor: `${colors.primary}15`,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  pointChangeContainer: {
+    position: 'absolute',
+    top: -10,
+    alignSelf: 'center',
+    zIndex: 10,
+  },
+  pointChangeText: {
+    fontSize: 16,
+    fontWeight: '700',
+    textAlign: 'center',
+  },
+  positiveChange: {
+    color: colors.status.success,
+  },
+  negativeChange: {
+    color: colors.status.error,
   },
 });

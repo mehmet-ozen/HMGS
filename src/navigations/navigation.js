@@ -18,6 +18,7 @@ import NotesScreen from '../screens/Courses/NotesScreen';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LeaderBoardScreen from '../screens/LeaderBoardScreen';
+import MatchupsScreen from '../screens/Competition/MatchupsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -38,10 +39,8 @@ export default function Navigation() {
             <NavigationContainer>
                 <Stack.Navigator
                     screenOptions={{
-                        headerTitleStyle: { color: colors.primary },
-                        headerStyle: { backgroundColor: colors.primary },
-                        headerTintColor: colors.text.white,
-                        headerShadowVisible:false
+                        headerStyle: { backgroundColor: colors.background.primary },
+                        headerTintColor: colors.primary,
                     }}
                 >
                     {!isSignIn ? (
@@ -55,10 +54,6 @@ export default function Navigation() {
                                 name="Home"
                                 component={HomeScreen}
                                 options={{
-                                    title: 'Hukuk',
-                                    headerTitleAlign: 'center',
-                                    headerTitleStyle: { color: colors.text.primary },
-                                    headerStyle: { backgroundColor: colors.primary },
                                     headerShown: false,
                                 }}
                             />
@@ -67,16 +62,26 @@ export default function Navigation() {
                                 component={QuizCompetitionScreen}
                                 options={{
                                     title: '',
-                                    headerStyle: { backgroundColor: colors.primary },
-                                    animation: 'slide_from_bottom',
+                                    animation: 'fade',
                                     headerBackVisible: false,
+                                    headerShown:false,
                                 }}
                             />
                             <Stack.Screen
                                 name="WheelScreen"
                                 component={WheelScreen}
                                 options={{
+                                    animation: 'fade',
+                                    title:'',
+                                    headerShown:false,
+                                }}
+                            />
+                            <Stack.Screen
+                                name="Matchups"
+                                component={MatchupsScreen}
+                                options={{
                                     animation: 'slide_from_bottom',
+                                    title: 'Karşılaşmalar'
                                 }}
                             />
                             <Stack.Screen
@@ -91,6 +96,10 @@ export default function Navigation() {
                                 component={LeaderBoardScreen}
                                 options={{
                                     animation: 'slide_from_bottom',
+                                    title:'',
+                                    headerStyle: { backgroundColor: colors.primary },
+                                    headerTintColor:colors.background.primary,
+                                    headerShadowVisible:false,
                                 }}
                             />
                             <Stack.Screen
@@ -104,10 +113,8 @@ export default function Navigation() {
                                 name="Courses"
                                 component={CoursesScreen}
                                 options={{
-                                    headerStyle: { backgroundColor: colors.primary },
                                     animation: 'slide_from_bottom',
                                     headerTitle: 'Dersler',
-                                    headerTitleStyle: { color: colors.text.white },
                                 }}
                             />
                             <Stack.Screen
@@ -125,15 +132,12 @@ export default function Navigation() {
                                 options={{
                                     animation: 'slide_from_right',
                                     animationDuration: 100,
-                                    headerTitleStyle: { color: colors.text.white },
                                 }}
                             />
                             <Stack.Screen
                                 name="QuizTopics"
                                 component={QuizTopicsScreen}
                                 options={{
-                                    headerTitleStyle: { color: colors.text.white },
-                                    headerTintColor: colors.text.white,
                                     animation: 'slide_from_right',
                                     animationDuration: 100,
                                 }}
@@ -143,15 +147,16 @@ export default function Navigation() {
                                 component={QuizScreen}
                                 options={{
                                     headerTitle: 'Test',
-                                    headerTitleStyle: { color: colors.text.white },
                                 }}
                             />
                             <Stack.Screen
                                 name="Notes"
                                 component={NotesScreen}
                                 options={{
-                                    headerTitleStyle: { color: colors.text.white },
+                                    headerStyle:{backgroundColor:colors.background.secondary},
                                     animation: 'slide_from_bottom',
+                                    headerShadowVisible:false,
+                                    headerTitleAlign:'center',
                                 }}
                             />
 

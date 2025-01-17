@@ -18,7 +18,7 @@ export default function App() {
   return (
     <AuthProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar backgroundColor={colors.primary} style="light" />
+      <StatusBar backgroundColor={'black'} style="light" />
         <Navigation />
         <Toast />
       </GestureHandlerRootView>

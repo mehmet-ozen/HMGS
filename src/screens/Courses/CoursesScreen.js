@@ -101,7 +101,6 @@ const CourseItem = ({ item, onPress }) => {
   return (
     <Pressable
       onPress={handlePress}
-      pressRetentionOffset={20}
       style={({ pressed }) => [
         styles.courseItem,
         pressed && styles.coursePressed

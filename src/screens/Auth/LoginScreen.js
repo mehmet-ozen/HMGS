@@ -176,6 +176,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         marginBottom: 20,
+        
     },
     title: {
         fontSize: 24,
@@ -189,7 +190,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     form: {
-        marginBottom: 20,
+
     },
     inputContainer: {
         flexDirection: 'row',
@@ -230,7 +231,6 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     footer: {
-        marginTop: 'auto',
     },
     divider: {
         flexDirection: 'row',

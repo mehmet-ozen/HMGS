@@ -60,7 +60,7 @@ export default function HomeScreen() {
       paddingLeft: insets.left,
       paddingRight: insets.right,
     }]}>
-      <StatusBar backgroundColor={colors.primary} style="auto" />
+      <StatusBar backgroundColor={'black'} style="auto" />
       <View style={styles.container}>
         <View style={styles.topSection}>
           <View style={styles.topBackground} />
@@ -128,7 +128,7 @@ export default function HomeScreen() {
             title="HUKUK ÇARKI"
             icon="flower-outline"
             color={colors.secondary}
-            onPress={() => navigation.navigate('WheelScreen')}
+            onPress={() => navigation.navigate('Matchups')}
           />
           <HomeButton
             title="LİDERLİK TABLOSU"
