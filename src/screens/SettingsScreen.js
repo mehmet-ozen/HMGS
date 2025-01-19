@@ -16,6 +16,7 @@ import { version } from '../../package.json';
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import images from '../data/images';
+import { Avatar } from '../components/Avatar';
 
 const SettingItem = ({ icon, title, subtitle, onPress, value, type = 'arrow' }) => (
   <TouchableOpacity 
@@ -56,7 +57,7 @@ const SettingsSection = ({ title, children }) => (
 
 export default function SettingsScreen() {
   const navigation = useNavigation();
-  const {user, deleteAccount, logout} = useAuth();
+  const {user, logout} = useAuth();
   const [notifications, setNotifications] = useState({
     all: true,
     reminders: true,
@@ -96,8 +97,9 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await deleteAccount();
+              navigation.navigate('Reauthenticate')
             } catch (error) {
+              console.log(error);
               Alert.alert('Hata', 'Hesap silinirken bir hata oluştu');
             }
           }
@@ -112,7 +114,8 @@ export default function SettingsScreen() {
         {/* Profil Bölümü */}
         <View style={styles.profileSection}>
             <View style={styles.profilePhotoContainer}>
-                <Image source={images.avatars[user.profilePhotoIndex]} style={styles.profilePhoto} />
+                {/* <Image source={images.avatars[user.avatar.photoIndex]} style={styles.profilePhoto} /> */}
+                <Avatar user={user}/>
             </View>
           <Text style={styles.profileName}>{user?.fullName || 'Kullanıcı'}</Text>
           <Text style={styles.profileEmail}>{user?.email}</Text>
@@ -228,8 +231,6 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border.light,
   },
   profilePhotoContainer: {
-    width: 100,
-    height: 100,
     borderRadius: 50,
     marginBottom: 15,
     position: 'relative',

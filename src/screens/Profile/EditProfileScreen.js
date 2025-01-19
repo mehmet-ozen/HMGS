@@ -46,7 +46,7 @@ export default function EditProfileScreen() {
     useEffect(() => {
         if(user){
             setFullName(user.fullName || '');
-            setSelectedPhoto(user.profilePhotoIndex);
+            setSelectedPhoto(user.avatar.photoIndex);
         }
     }, []);
 

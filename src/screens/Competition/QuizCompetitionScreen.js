@@ -14,6 +14,8 @@ import { colors } from '../../theme/colors';
 import firestore from '@react-native-firebase/firestore';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { changeScore } from '../../data/functions';
+// import { LinearGradient } from 'expo-linear-gradient';
 
 const { width, height } = Dimensions.get('window');
 
@@ -179,7 +181,7 @@ const competitors = {
 };
 
 export default function QuizCompetitionScreen({ route }) {
-  const { selectedItemID, selectedColor } = route.params;
+  const { selectedItemID, selectedColor, match } = route.params;
   const [selectedOption, setSelectedOption] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [question, setQuestion] = useState({ id: '', question: '', options: [], answer: '' });
@@ -232,7 +234,7 @@ export default function QuizCompetitionScreen({ route }) {
       // Skor değişimini ayarla
       const change = isCorrect ? 20 : -10;
       setScoreChange(change);
-
+      changeScore(match,change);
       // competitors state'ini güncelle
       competitors.user.score += change;
 
@@ -256,7 +258,7 @@ export default function QuizCompetitionScreen({ route }) {
         colors={[selectedColor, selectedColor, 'transparent']}
         style={styles.background}
       />
-      <View style={styles.competitorsContainer}>
+      {/* <View style={styles.competitorsContainer}>
         <CompetitorCard
           competitor={competitors.user}
           isUser={true}
@@ -269,7 +271,7 @@ export default function QuizCompetitionScreen({ route }) {
           competitor={competitors.opponent}
           isUser={false}
         />
-      </View>
+      </View> */}
 
       <View style={styles.questionContainer}>
         <Text style={styles.questionText}>
@@ -350,7 +352,7 @@ const styles = StyleSheet.create({
   scoreContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'center',
+    justifyContent: 'center',
     gap: 6,
     backgroundColor: '`${colors.primary}20`',
     paddingHorizontal: 12,
@@ -561,7 +563,7 @@ const styles = StyleSheet.create({
   scoreContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:"center",
+    justifyContent: "center",
     gap: 4,
     backgroundColor: `${colors.primary}15`,
     paddingHorizontal: 8,

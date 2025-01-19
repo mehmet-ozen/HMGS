@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,49 +7,79 @@ import {
   FlatList,
   Image,
   Dimensions,
-  Pressable
+  Pressable,
+  Alert
 } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { colors } from '../../theme/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
-const { width } = Dimensions.get('window');
+import firestore from '@react-native-firebase/firestore'
+import useMatch from '../../data/functions';
+import { useAuth } from '../../context/AuthContext';
+import auth from '@react-native-firebase/auth';
+import { useNavigation } from '@react-navigation/native';
+import { Avatar } from '../../components/Avatar';
+const { width, height } = Dimensions.get('window');
 const AVATAR_SIZE = width * 0.12;
 
-export default function MatchupsScreen({ navigation }) {
-  const [activeMatches, setActiveMatches] = useState([
-    {
-      id: '1',
-      player1: { id: 'user1', name: 'Sen', score: 1200, photo: 1 },
-      player2: { id: 'user2', name: 'Ahmet K.', score: 800, photo: 2 },
-      status: 'waiting', // waiting, completed
-      isYourTurn: true,
-      winner: 'user1'
-    },
-    {
-      id: '2',
-      player1: { id: 'user1', name: 'Sen', score: 900, photo: 1 },
-      player2: { id: 'user2', name: 'Mehmet Y.', score: 200, photo: 3 },
-      status: 'completed',
-      isYourTurn: false,
-      winner: 'user1'
-    }
-    ,
-    {
-      id: '3',
-      player1: { id: 'user1', name: 'Sen', score: 900, photo: 1 },
-      player2: { id: 'user2', name: 'Mehmet Y.', score: 1200, photo: 3 },
-      status: 'completed',
-      isYourTurn: false,
-      winner: 'user2'
-    }
-  ]);
+
+export default function MatchupsScreen() {
+  const { user, matchesIds } = useAuth();
+  const navigation = useNavigation();
+  const { status, matchId, findOrCreateMatch } = useMatch('spin_the_wheel');
+  const [matches, setMatches] = useState([]);
+
+  useEffect(() => {
+    const getMatches = async () => {
+      try {
+        // Kullanıcının matchIds'lerini kontrol et
+        if (!user?.matchIds || user.matchIds.length === 0) {
+          setMatches([]);
+          return;
+        }
+
+        const matchesRef = firestore().collection('spin_the_wheel_matches');
+
+        // Kullanıcının tüm maçlarını al
+        const matchesSnapshot = await matchesRef
+          .where(firestore.FieldPath.documentId(), 'in', user.matchIds)
+          .get();
+
+        const matchesData = matchesSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          createdAt: doc.data().createdAt?.toDate(), // Timestamp'i Date'e çevir
+        }));
+
+        // Maçları tarihe göre sırala (en yeniden en eskiye)
+        const sortedMatches = matchesData.sort((a, b) =>
+          b.createdAt - a.createdAt
+        );
+
+        setMatches(sortedMatches);
+
+      } catch (error) {
+        console.error('Error fetching matches data:', error);
+        Alert.alert(
+          'Hata',
+          'Maç geçmişi yüklenirken bir hata oluştu.'
+        );
+      }
+    };
+
+    getMatches();
+  }, [user?.matchIds, matchId]); // user.matchIds değiştiğinde de yeniden yükle
 
   const renderMatchupItem = ({ item }) => {
     const isCompleted = item.status === 'completed';
-    const isWaiting = item.status === 'waiting';
+    const isActive = item.status === 'active';
     const isWinner = isCompleted && item.winner === 'user1';
     const isLoser = isCompleted && item.winner !== 'user1';
+
+    const currentUser = auth().currentUser;
+    
+    const currentPlayer = item.player1.userId === currentUser.uid ? item.player1 : item.player2;
+    const opponentPlayer = item.player1.userId === currentUser.uid ? item.player2 : item.player1;
 
     const renderMatchStatus = () => {
       if (!isCompleted) return null;
@@ -70,8 +100,7 @@ export default function MatchupsScreen({ navigation }) {
     };
 
     return (
-      <Animated.View
-        entering={FadeInDown.delay(200).duration(400)}
+      <View
         style={styles.matchupCard}
       >
         <View style={styles.matchupContent}>
@@ -81,13 +110,15 @@ export default function MatchupsScreen({ navigation }) {
             isWinner && styles.winnerInfo,
             isLoser && styles.loserInfo
           ]}>
-            <Text style={styles.playerName}>{item.player1.name}</Text>
-            <Image
-              source={require('../../../assets/images/pp_1.png')}
-              style={styles.avatar}
-            />
+            <Text style={styles.playerName}>Sen</Text>
+            <Avatar user={currentPlayer} size='small' />
             <View style={styles.scoreContainer}>
-              <Text style={styles.score}>{item.player1.score || '-'}</Text>
+            <Text style={
+              [
+                styles.score,
+                { color: currentPlayer.score < 0 ? colors.status.error : colors.text.s }
+              ]
+              }>{currentPlayer.score}</Text>
               <Ionicons name="star" size={16} color="#FFD700" />
             </View>
           </View>
@@ -97,9 +128,9 @@ export default function MatchupsScreen({ navigation }) {
             <View style={styles.vsCircle}>
               <Text style={styles.vsText}>VS</Text>
             </View>
-            {isWaiting && item.isYourTurn ? (
+            {isActive ? (
               <View style={styles.turnIndicator}>
-                <Text style={styles.turnText}>Senin Sıran!</Text>
+                <Text style={styles.turnText}>Devam Ediyor!</Text>
               </View>
             ) : renderMatchStatus()}
           </View>
@@ -107,40 +138,62 @@ export default function MatchupsScreen({ navigation }) {
           {/* Player 2 */}
           <View style={[
             styles.playerInfo,
-            isCompleted && item.winner === item.player2.id && styles.winnerInfo,
-            isCompleted && item.winner !== item.player2.id && styles.loserInfo
+            isCompleted && item.winner === opponentPlayer.id && styles.winnerInfo,
+            isCompleted && item.winner !== opponentPlayer.id && styles.loserInfo
           ]}>
-            <Text style={styles.playerName}>{item.player2.name}</Text>
-            <Image
-              source={require('../../../assets/images/pp_2.png')}
-              style={styles.avatar}
-            />
+            <Text style={styles.playerName}>{opponentPlayer.fullName}</Text>
+            <Avatar user={opponentPlayer} size='small' />
+
             <View style={styles.scoreContainer}>
               <Ionicons name="star" size={16} color="#FFD700" />
-              <Text style={styles.score}>{item.player2.score || 'Bekliyor'}</Text>
+              <Text style={
+              [
+                styles.score,
+                { color: opponentPlayer.score < 0 ? colors.status.error : colors.text.primary }
+              ]
+              }>{opponentPlayer.score}</Text>
             </View>
           </View>
         </View>
 
-        {isWaiting && item.isYourTurn && (
+        {isActive && (
           <TouchableOpacity
             style={styles.playButton}
-            onPress={() => navigation.navigate('WheelScreen')}
+            onPress={() => navigation.navigate('WheelScreen', { match: item })}
           >
             <Text style={styles.playButtonText}>Oyna</Text>
             <Ionicons name="chevron-forward" size={20} color={colors.primary} />
           </TouchableOpacity>
         )}
-      </Animated.View>
+      </View>
     );
   };
 
+  const handleFindMatch = () => {
+    findOrCreateMatch('spin_the_wheel');
+  }
+
+  useEffect(() => {
+    if (status === 'active') {
+      Alert.alert('Eşleşme bulundu!', `Karşılaşma ID: ${matchId}`);
+      const currentMatch = matches.find((item) => {
+        return item.id === matchId;
+      });
+      if (currentMatch !== 'undefined' && currentMatch) {
+        navigation.navigate('WheelScreen', { match: currentMatch });
+      }
+    } else if (status === 'waiting') {
+      Alert.alert('Bekleniyor...', 'Eşleşme için bir oyuncu bekleniyor.');
+    }
+  }, [status, matchId, matches])
+
+
+
   return (
     <View style={styles.container}>
-
       {/* Active Matches */}
       <FlatList
-        data={activeMatches}
+        data={matches}
         renderItem={({ item }) => renderMatchupItem({ item, type: 'active' })}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
@@ -157,7 +210,7 @@ export default function MatchupsScreen({ navigation }) {
               ? [styles.findMatchButton, styles.pressedFindMatchButton]
               : styles.findMatchButton
           ]}
-          onPress={() => { }}
+          onPress={handleFindMatch}
         >
           <Ionicons name="search" size={24} color={colors.text.white} />
           <Text style={styles.findMatchText}>
@@ -174,7 +227,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.primary,
-    paddingTop: 20,
   },
   header: {
     padding: 20,
@@ -188,7 +240,7 @@ const styles = StyleSheet.create({
   findMatchButton: {
     backgroundColor: colors.primary,
     borderRadius: 12,
-    padding: 16,
+    padding: height <= 720 ? 8 : 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -215,6 +267,8 @@ const styles = StyleSheet.create({
   },
   matchupsList: {
     paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 100,
   },
   matchupCard: {
     backgroundColor: colors.background.card,
@@ -236,7 +290,7 @@ const styles = StyleSheet.create({
   loserInfo: {
     flex: 1,
     alignItems: 'center',
-    opacity:0.5,
+    opacity: 0.5,
   },
   avatar: {
     width: AVATAR_SIZE,
@@ -254,7 +308,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     fontSize: 14,
     fontWeight: '600',
-    color: colors.text.primary,
   },
   scoreContainer: {
     flexDirection: 'row',
@@ -263,6 +316,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
+    marginTop: 10,
   },
   vsContainer: {
     alignItems: 'center',
@@ -298,7 +352,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     marginTop: 12,
-    
+
   },
   playButtonText: {
     color: colors.primary,
@@ -335,7 +389,6 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     position: 'absolute',
-    height: 100,
     bottom: 0,
     left: 0,
     right: 0,

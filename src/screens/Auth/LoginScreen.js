@@ -17,6 +17,7 @@ import { colors } from '../../theme/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../context/AuthContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 export default function LoginScreen() {
@@ -26,6 +27,7 @@ export default function LoginScreen() {
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const { login } = useAuth();
+    const insets = useSafeAreaInsets();
 
     // // Email/Şifre ile giriş
     const handleEmailLogin = async () => {
@@ -40,7 +42,7 @@ export default function LoginScreen() {
         } catch (error) {
             Alert.alert('Hata', 'Giriş yaparken bir hata oluştu');
             console.log(error)
-        }finally{
+        } finally {
             setLoading(false);
         }
     };
@@ -49,28 +51,36 @@ export default function LoginScreen() {
     }
 
     return (
-        <View style={styles.container}>
-            <KeyboardAvoidingView
+        <View style={[styles.container,
+        {
+            paddingRight: insets.right,
+            paddingLeft: insets.left,
+            paddingTop: insets.top,
+            paddingBottom: insets.bottom,
+        }
+        ]}>
+            <View
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.container}
             >
                 <View style={styles.content}>
-                    <Animated.View
-                        entering={FadeInDown.delay(200).duration(1000).springify()}
-                        style={styles.header}
-                    >
-                        <Image
-                            source={require('../../../assets/images/pp_1.png')}
-                            style={styles.logo}
-                        />
-                        <Text style={styles.title}>Hoş Geldiniz</Text>
-                        <Text style={styles.subtitle}>Hesabınıza giriş yapın</Text>
-                    </Animated.View>
+
 
                     <Animated.View
                         entering={FadeInDown.delay(400).duration(1000).springify()}
                         style={styles.form}
                     >
+                        <Animated.View
+                            entering={FadeInDown.delay(200).duration(1000).springify()}
+                            style={styles.header}
+                        >
+                            <Image
+                                source={require('../../../assets/images/pp_1.png')}
+                                style={styles.logo}
+                            />
+                            <Text style={styles.title}>Hoş Geldiniz</Text>
+                            <Text style={styles.subtitle}>Hesabınıza giriş yapın</Text>
+                        </Animated.View>
                         <View style={styles.inputContainer}>
                             <Ionicons name="mail-outline" size={20} color={colors.text.light} />
                             <TextInput
@@ -111,6 +121,13 @@ export default function LoginScreen() {
                             <Text style={styles.forgotPasswordText}>Şifremi Unuttum</Text>
                         </TouchableOpacity>
 
+
+                    </Animated.View>
+
+                    <Animated.View
+                        entering={FadeInUp.delay(600).duration(1000).springify()}
+                        style={styles.footer}
+                    >
                         <TouchableOpacity
                             style={styles.loginButton}
                             onPress={handleEmailLogin}
@@ -122,12 +139,6 @@ export default function LoginScreen() {
                                 <Text style={styles.loginButtonText}>Giriş Yap</Text>
                             )}
                         </TouchableOpacity>
-                    </Animated.View>
-
-                    <Animated.View
-                        entering={FadeInUp.delay(600).duration(1000).springify()}
-                        style={styles.footer}
-                    >
                         <View style={styles.divider}>
                             <View style={styles.dividerLine} />
                             <Text style={styles.dividerText}>veya</Text>
@@ -154,7 +165,7 @@ export default function LoginScreen() {
                         </View>
                     </Animated.View>
                 </View>
-            </KeyboardAvoidingView>
+            </View>
         </View>
     )
 };
@@ -167,16 +178,14 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         padding: 20,
+        justifyContent: 'space-between'
     },
     header: {
         alignItems: 'center',
-        marginTop: 20,
     },
     logo: {
         width: 100,
         height: 100,
-        marginBottom: 20,
-        
     },
     title: {
         fontSize: 24,
@@ -231,11 +240,12 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     footer: {
+
     },
     divider: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 30,
+        marginVertical: 20,
     },
     dividerLine: {
         flex: 1,

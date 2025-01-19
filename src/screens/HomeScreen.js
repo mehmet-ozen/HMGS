@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { colors } from '../theme/colors';
 import { useNavigation } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
@@ -7,9 +7,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '../context/AuthContext';
 import images from '../data/images';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Avatar } from '../components/Avatar';
 
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const DailyQuestionCard = () => (
   <TouchableOpacity style={styles.dailyQuestionCard}>
@@ -48,10 +49,20 @@ const HomeButton = ({ onPress, title, icon, color, style }) => (
   </TouchableOpacity>
 );
 
-export default function HomeScreen() {
+const HomeScreen = () => {
   const navigation = useNavigation();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  console.log(user)
+
+  // Kullanıcı verisi yüklenene kadar loading göster
+  if (!user || !user.avatar) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={[styles.container, {
@@ -63,10 +74,10 @@ export default function HomeScreen() {
       <StatusBar backgroundColor={'black'} style="auto" />
       <View style={styles.container}>
         <View style={styles.topSection}>
-          <View style={styles.topBackground} />
-          <Image
-            source={images.avatars[user.profilePhotoIndex]}
-            style={styles.circleImage}
+          <Avatar 
+          user={user}
+          size='large'
+          style={{marginTop:20}}
           />
           <Animated.View
             entering={FadeInDown.delay(400)}
@@ -82,40 +93,6 @@ export default function HomeScreen() {
 
           <DailyQuestionCard />
         </View>
-
-        {/* <View style={styles.statsContainer}>
-          <View style={styles.statItem}>
-            <Ionicons 
-              name="book" 
-              size={24} 
-              color={colors.primary} 
-              style={styles.statIcon}
-            />
-            <Text style={styles.statNumber}>24</Text>
-            <Text style={styles.statLabel}>Çalışılan{'\n'}Kanun</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Ionicons 
-              name="document-text" 
-              size={24} 
-              color={colors.primary} 
-              style={styles.statIcon}
-            />
-            <Text style={styles.statNumber}>12</Text>
-            <Text style={styles.statLabel}>Çözülen{'\n'}İçtihat</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Ionicons 
-              name="trophy" 
-              size={24} 
-              color={colors.primary} 
-              style={styles.statIcon}
-            />
-            <Text style={styles.statNumber}>85%</Text>
-            <Text style={styles.statLabel}>Başarı{'\n'}Oranı</Text>
-          </View>
-        </View> */}
-
         <View style={styles.buttonContainer}>
           <HomeButton
             title="DERSLER"
@@ -147,22 +124,14 @@ export default function HomeScreen() {
       </View>
     </View>
   );
-}
+};
+
+export default HomeScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background.primary,
-  },
-  topBackground: {
-    height: 420, // Yüksekliği artırdık
-    backgroundColor: colors.primary,
-    position: 'absolute',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    top: 0,
-    left: 0,
-    right: 0
   },
   welcomeContainer: {
     paddingHorizontal: 30,
@@ -177,11 +146,13 @@ const styles = StyleSheet.create({
   },
   topSection: {
     alignItems: 'center',
-    height: 420,
+    backgroundColor: colors.primary,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
   },
   circleImage: {
-    width: width * 0.4,
-    height: width * 0.4,
+    width: height <= 720? width * 0.3: width * 0.4,
+    height: height <= 720? width * 0.3: width * 0.4,
     borderRadius: width * 0.2,
     backgroundColor: colors.background.primary,
     borderWidth: 4,
@@ -190,24 +161,14 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 20,
-    marginTop: 40,
-    gap: 15,
+    flex:1,
+    justifyContent:"space-evenly"
   },
   button: {
-    height: 60,
+    height: '20%',
     borderRadius: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
   },
   buttonText: {
     color: colors.text.white,
@@ -217,7 +178,7 @@ const styles = StyleSheet.create({
   },
   dailyQuestionCard: {
     marginHorizontal: 20,
-    marginTop: 20,
+    marginVertical: 20,
     width: '80%',
     padding: 15,
     backgroundColor: colors.background.card,
@@ -263,33 +224,6 @@ const styles = StyleSheet.create({
   expandIcon: {
     padding: 5,
   },
-  statsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginHorizontal: 20,
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: colors.background.card,
-    borderRadius: 15,
-    elevation: 2,
-  },
-  statItem: {
-    alignItems: 'center',
-    width: width * 0.25,
-  },
-  statIcon: {
-    marginBottom: 5,
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  statLabel: {
-    fontSize: 12,
-    color: colors.text.light,
-    marginTop: 5,
-  },
   buttonContent: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -301,11 +235,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 10,
   },
-  logoContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-    marginBottom: 10,
-  },
   sloganText: {
     fontSize: 16,
     color: colors.text.white,
@@ -313,14 +242,5 @@ const styles = StyleSheet.create({
     marginTop: 10,
     opacity: 0.9,
     textAlign: 'center',
-  },
-  smallButtonsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 15,
-  },
-  smallButton: {
-    flex: 1,
-    height: 50,
   },
 });

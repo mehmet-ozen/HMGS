@@ -1,8 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Pressable, Dimensions, Image as NativeImage, StyleSheet } from 'react-native';
-import { Canvas, Path, Group, Image, useImageAsTexture, useImage } from '@shopify/react-native-skia';
+import { Canvas, Path, Group, Image, useImage, Circle } from '@shopify/react-native-skia';
 import Animated, {
-    useAnimatedStyle,
     withSpring,
     withTiming,
     withSequence,
@@ -10,18 +9,19 @@ import Animated, {
     cancelAnimation,
     useSharedValue,
     runOnJS,
-    Easing
+    Easing,
+    useDerivedValue
 } from 'react-native-reanimated';
 import images from '../data/images';
 import { colors } from '../theme/colors';
 
-const screenWidth = Dimensions.get('window').width;
-const WHEEL_SIZE = screenWidth * 0.95;
+const { width, height } = Dimensions.get('window');
+const WHEEL_SIZE = height <= 720 ? width * 0.80 : width * 0.95;
 const CENTER_X = WHEEL_SIZE / 2;
 const CENTER_Y = WHEEL_SIZE / 2;
 const ITEM_COUNT = 8;
 const ANGLE = (2 * Math.PI) / ITEM_COUNT;
-const IMAGE_SIZE = 80;
+const IMAGE_SIZE = height <= 720 ? 60 : 80;
 
 export const Wheel = ({ onSpinEnd }) => {
     // Shared Values
@@ -44,6 +44,7 @@ export const Wheel = ({ onSpinEnd }) => {
         { id: 'hukuk_tarihi', label: 'Hukuk Tarihi', color: '#7f8c8d', icon: 'hammer', image: useImage(images.lessonsIcons.tarih_icon), nativeImage: images.lessonsIcons.tarih_icon },
         // ... diğer items
     ];
+    const pointerImage = useImage(images.wheel.pointer);
 
     const slicePaths = () =>
         wheelItems.map((_, index) => {
@@ -80,7 +81,7 @@ export const Wheel = ({ onSpinEnd }) => {
         const selected = wheelItems[selectedIndex];
 
         setSelectedItem(selected);
-        circleScale.value = withSpring(1, {
+        circleScale.value = withSpring(500, {
             damping: 20,
             stiffness: 90,
         }, () => {
@@ -120,22 +121,24 @@ export const Wheel = ({ onSpinEnd }) => {
         });
     };
 
-    // Animated Styles
-    const wheelStyle = useAnimatedStyle(() => ({
-        transform: [{ rotate: `${(rotation.value * 180) / Math.PI}deg` }],
-    }));
-
-    const circleStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: circleScale.value }],
-        opacity: circleScale.value,
-    }));
-
-    const pointerStyle = useAnimatedStyle(() => ({
-        transform: [{ rotate: `${pointerRotation.value}rad` }],
-    }));
-
+    const wheelTransform = useDerivedValue(() => {
+        return [
+            {
+                rotate: rotation.value
+            }
+        ]
+    });
+    const pointerTransform = useDerivedValue(() => {
+        return [
+            {
+                rotate: pointerRotation.value,
+                scale: 0.9,
+            }
+        ]
+    })
     const renderWheelItems = () => (
-        <Group origin={{ x: CENTER_X, y: CENTER_Y }}>
+        <Group origin={{ x: CENTER_X, y: CENTER_Y }} transform={wheelTransform}>
+
             {wheelItems.map((item, index) => {
                 const imagePos = getImagePosition(index);
 
@@ -166,79 +169,89 @@ export const Wheel = ({ onSpinEnd }) => {
                     </Group>
                 );
             })}
+
         </Group>
     );
 
     return (
-        <View style={styles.wheelContainer}>
-            <Animated.View style={[styles.wheel, wheelStyle]}>
+        <View style={styles.container}>
+            <View style={styles.wheelContainer}>
                 <Canvas style={styles.canvas}>
                     {renderWheelItems()}
+                    <Image
+                        image={pointerImage}
+                        x={CENTER_X - 25}
+                        y={0}
+                        origin={{ x: CENTER_X, y: 20 }}
+                        width={50}
+                        height={50}
+                        fit={"contain"}
+                        transform={pointerTransform}
+                    />
                 </Canvas>
-            </Animated.View>
 
-            <Animated.Image
-                source={images.wheel.pointer}
-                style={[styles.pointer, pointerStyle]}
-            />
-
-            <Pressable
-                style={[styles.spinButton, isSpinning && styles.spinButtonDisabled]}
-                onPress={spin}
-                disabled={isSpinning}
-            >
-                <Text style={styles.spinButtonText}>
-                    {isSpinning ? '...' : 'ÇEVİR'}
-                </Text>
-            </Pressable>
-
-            {selectedItem && (
-                <Animated.View
-                    style={[
-                        styles.expandingCircle,
-                        { backgroundColor: selectedItem.color },
-                        circleStyle
-                    ]}
+                <Pressable
+                    style={[styles.spinButton, isSpinning && styles.spinButtonDisabled]}
+                    onPress={spin}
+                    disabled={isSpinning}
                 >
-                    <View style={styles.expandingItemContainer}>
-                        <Text style={styles.selectedItemText}>
-                            {selectedItem.label}
-                        </Text>
-                        <NativeImage
-                            source={selectedItem.nativeImage}
-                            style={styles.selectedImage}
-                            resizeMode="cover"
-                        />
-                    </View>
-                </Animated.View>
+                    <Text style={styles.spinButtonText}>
+                        {isSpinning ? '...' : 'ÇEVİR'}
+                    </Text>
+                </Pressable>
+            </View>
+            {selectedItem && (
+                <Canvas style={{ position: 'absolute', width: '100%', height: '100%', zIndex: 2 }}>
+                    <Circle cx={width / 2} cy={height / 2} r={circleScale} color={selectedItem ? selectedItem.color : 'red'} />
+                    <Image
+                        image={selectedItem.image}
+                        x={width / 2 - IMAGE_SIZE * 3 / 2}
+                        y={height / 2 - IMAGE_SIZE * 3 / 2}
+                        width={IMAGE_SIZE * 3}
+                        height={IMAGE_SIZE * 3}
+                        fit="contain" />
+                </Canvas>
             )}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+    },
     wheelContainer: {
         alignItems: 'center',
         justifyContent: 'center',
+        borderWidth:1,
+        borderRadius:WHEEL_SIZE,
+        marginBottom:20,
+
     },
     wheel: {
         width: WHEEL_SIZE,
         height: WHEEL_SIZE,
-        borderColor:colors.border.light,
-        borderWidth:2,
-        borderRadius:WHEEL_SIZE,
-        alignItems:"center",
-        justifyContent:"center",
+        borderColor: colors.border.light,
+        borderWidth: 2,
+        borderRadius: WHEEL_SIZE,
+        alignItems: "center",
+        justifyContent: "center",
+
     },
     canvas: {
         width: WHEEL_SIZE,
         height: WHEEL_SIZE,
+
     },
     pointer: {
         width: 40,
         height: 40,
         position: 'absolute',
-        top:-10
+        top: -15
     },
     spinButton: {
         position: 'absolute',
@@ -266,11 +279,11 @@ const styles = StyleSheet.create({
     },
     expandingCircle: {
         position: 'absolute',
-        width: WHEEL_SIZE * 3,
-        height: WHEEL_SIZE * 3,
-        borderRadius: WHEEL_SIZE * 1.5,
+        width: WHEEL_SIZE,
+        height: WHEEL_SIZE,
+        borderRadius: WHEEL_SIZE,
         alignSelf: 'center',
-        zIndex: 1000,
+        zIndex: 2,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -286,5 +299,7 @@ const styles = StyleSheet.create({
     selectedImage: {
         width: 300,
         height: 300,
+        position: 'absolute',
+        bottom: 70,
     },
 });

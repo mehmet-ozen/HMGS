@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, Vibration } from 'react-native'
+import { View, Text, StyleSheet, Image, Vibration, Dimensions } from 'react-native'
 import React from 'react'
 import { colors } from '../../theme/colors';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -16,6 +16,7 @@ const courseImages = {
     esya_hukuku: require('../../../assets/images/esya_hukuku.png'),
     miras_hukuku: require('../../../assets/images/miras_hukuku.png'),
 };
+const {width, height} = Dimensions.get('window');
 
 export default function BottomFormSheet({ route }) {
     const navigation = useNavigation();
@@ -137,8 +138,8 @@ const styles = StyleSheet.create({
         marginBottom: 24,
     },
     modalImage: {
-        width: 100,
-        height: 100,
+        width: height <= 720? 75: 100,
+        height: height <= 720? 75: 100,
         borderRadius: 16,
         backgroundColor: colors.background.secondary,
     },
@@ -182,7 +183,7 @@ const styles = StyleSheet.create({
     },
     modalButton: {
         alignItems: 'center',
-        padding: 16,
+        padding: height <= 720? 8: 16,
         borderRadius: 16,
         width: '100%',
         gap: 12,

@@ -19,6 +19,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LeaderBoardScreen from '../screens/LeaderBoardScreen';
 import MatchupsScreen from '../screens/Competition/MatchupsScreen';
+import ReauthenticateScreen from '../screens/Auth/ReauthenticateScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,7 +36,6 @@ export default function Navigation() {
 
     return (
         <SafeAreaProvider>
-
             <NavigationContainer>
                 <Stack.Navigator
                     screenOptions={{
@@ -45,8 +45,18 @@ export default function Navigation() {
                 >
                     {!isSignIn ? (
                         <>
-                            <Stack.Screen name="Login" component={LoginScreen} />
-                            <Stack.Screen name="SignUp" component={SignUpScreen} />
+                            <Stack.Screen name="Login"
+                                component={LoginScreen}
+                                options={{
+                                    headerShown: false,
+                                }}
+                            />
+                            <Stack.Screen name="SignUp"
+                                component={SignUpScreen}
+                                options={{
+                                    headerShown: false,
+                                }}
+                            />
                         </>
                     ) : (
                         <>
@@ -64,7 +74,7 @@ export default function Navigation() {
                                     title: '',
                                     animation: 'fade',
                                     headerBackVisible: false,
-                                    headerShown:false,
+                                    headerShown: false,
                                 }}
                             />
                             <Stack.Screen
@@ -72,8 +82,8 @@ export default function Navigation() {
                                 component={WheelScreen}
                                 options={{
                                     animation: 'fade',
-                                    title:'',
-                                    headerShown:false,
+                                    title: '',
+                                    headerShown: false,
                                 }}
                             />
                             <Stack.Screen
@@ -96,10 +106,10 @@ export default function Navigation() {
                                 component={LeaderBoardScreen}
                                 options={{
                                     animation: 'slide_from_bottom',
-                                    title:'',
+                                    title: '',
                                     headerStyle: { backgroundColor: colors.primary },
-                                    headerTintColor:colors.background.primary,
-                                    headerShadowVisible:false,
+                                    headerTintColor: colors.background.primary,
+                                    headerShadowVisible: false,
                                 }}
                             />
                             <Stack.Screen
@@ -153,10 +163,17 @@ export default function Navigation() {
                                 name="Notes"
                                 component={NotesScreen}
                                 options={{
-                                    headerStyle:{backgroundColor:colors.background.secondary},
+                                    headerStyle: { backgroundColor: colors.background.secondary },
                                     animation: 'slide_from_bottom',
-                                    headerShadowVisible:false,
-                                    headerTitleAlign:'center',
+                                    headerShadowVisible: false,
+                                    headerTitleAlign: 'center',
+                                }}
+                            />
+                            
+                            <Stack.Screen name="Reauthenticate"
+                                component={ReauthenticateScreen}
+                                options={{
+                                    headerShown: false,
                                 }}
                             />
 

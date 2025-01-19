@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
           .get();
 
         if (userDoc.exists) {
-          setUser({ ...user, ...userDoc.data() });
+          setUser({ ...userDoc.data() });
         } else {
           setUser(user);
         }
@@ -57,11 +57,13 @@ export const AuthProvider = ({ children }) => {
 
   const deleteAccount = async () => {
     try {
-      const userRef = firestore().collection('users').doc(auth().currentUser.uid);
-      if(userRef){
+      const userUid = auth().currentUser.uid;
+      await auth().currentUser.delete();
+
+      const userRef = firestore().collection('users').doc(userUid);
+      if (userRef) {
         await userRef.delete();
       }
-      await auth().currentUser.delete();
       setUser(null);
     } catch (error) {
       throw error;
@@ -72,24 +74,28 @@ export const AuthProvider = ({ children }) => {
     try {
       const userCredential = await auth().createUserWithEmailAndPassword(email, password);
       const userData = {
+        userId: auth().currentUser.uid,
         fullName,
         email,
         createdAt: firestore.FieldValue.serverTimestamp(),
         lastLogin: null,
-        profilePhotoIndex: 0,
+        avatar: {
+          photoIndex: 0,
+          frameIndex: 0,
+        },
       };
-  
+
       // Kullanıcı bilgilerini Firestore'a kaydet
       await firestore().collection('users').doc(userCredential.user.uid).set(userData);
-  
+
       // AuthContext'teki user state'ini güncelle
-      setUser({ ...userCredential.user, ...userData });
+      setUser({ ...userData });
     } catch (error) {
       throw error;
     }
   };
 
-  const updateUserData = async (userData, fullName, profilePhotoIndex) => {
+  const updateUserData = async (userData, fullName, photoIndex) => {
     try {
       const userRef = firestore()
         .collection('users')
@@ -111,10 +117,21 @@ export const AuthProvider = ({ children }) => {
 
       await userRef.update({
         fullName: fullName.trim(),
-        profilePhotoIndex: profilePhotoIndex,
+        avatar: {
+          photoIndex: photoIndex,
+          frameIndex: 0,
+        },
         updatedAt: firestore.FieldValue.serverTimestamp()
       });
-      setUser({ ...user, fullName: fullName.trim(), profilePhotoIndex: profilePhotoIndex, updateAt: firestore.FieldValue.serverTimestamp() })
+      setUser({
+        ...user,
+        fullName: fullName.trim(),
+        avatar: {
+          photoIndex: photoIndex,
+          frameIndex: 0,
+        },
+        updateAt: firestore.FieldValue.serverTimestamp()
+      })
       Alert.alert('Başarılı', 'Profil bilgileriniz güncellendi', [
         { text: 'Tamam', onPress: () => navigation.goBack() }
       ]);
@@ -123,9 +140,44 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-
   }
+  const addMatchsIds = async (matchId) => {
+    try {
+      const userRef = firestore()
+        .collection('users')
+        .doc(auth().currentUser.uid);
 
+      // Önce mevcut kullanıcı verisini alalım
+      const userDoc = await userRef.get();
+      const userData = userDoc.data();
+
+      // matchIds array'ini kontrol et, yoksa oluştur
+      const currentMatchIds = userData.matchIds || [];
+
+      // Yeni matchId'yi array'e ekle (eğer zaten yoksa)
+      if (!currentMatchIds.includes(matchId)) {
+        const updatedMatchIds = [...currentMatchIds, matchId];
+
+        // Firestore'u güncelle
+        await userRef.update({
+          matchIds: updatedMatchIds,
+          updatedAt: firestore.FieldValue.serverTimestamp()
+        });
+
+        // Local state'i güncelle
+        setUser(prevUser => ({
+          ...prevUser,
+          matchIds: updatedMatchIds
+        }));
+
+        console.log('Yeni maç ID başarıyla eklendi:', matchId);
+      }
+
+    } catch (error) {
+      console.error('Maç ID eklenirken hata oluştu:', error);
+      throw error;
+    }
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -136,7 +188,8 @@ export const AuthProvider = ({ children }) => {
         logout,
         register,
         updateUserData,
-        deleteAccount
+        deleteAccount,
+        addMatchsIds
       }}
     >
       {children}
